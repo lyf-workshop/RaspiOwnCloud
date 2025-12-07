@@ -7,9 +7,18 @@
 set -e
 
 # 配置
-BACKUP_DIR="/mnt/cloud_storage/backups"
+# 自动检测存储路径（优先SD卡，如果不存在则使用外接硬盘）
+if [ -d "/opt/raspberrycloud/storage" ]; then
+    # SD卡存储方案
+    BACKUP_DIR="/opt/raspberrycloud/storage/backups"
+    DATA_DIR="/opt/raspberrycloud/storage/users"
+else
+    # 外接硬盘存储方案
+    BACKUP_DIR="/mnt/cloud_storage/backups"
+    DATA_DIR="/mnt/cloud_storage/users"
+fi
+
 DB_PATH="/opt/raspberrycloud/backend/raspberrycloud.db"
-DATA_DIR="/mnt/cloud_storage/users"
 DATE=$(date +%Y%m%d_%H%M%S)
 KEEP_DAYS=7  # 保留最近7天的备份
 
@@ -49,4 +58,5 @@ find "$BACKUP_DIR" -name "database_*.gz" -mtime +$KEEP_DAYS -delete
 find "$BACKUP_DIR" -name "userdata_*.tar.gz" -mtime +$KEEP_DAYS -delete
 
 print_info "备份完成！"
+
 

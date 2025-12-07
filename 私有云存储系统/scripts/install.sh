@@ -94,13 +94,28 @@ print_info "创建应用目录..."
 mkdir -p /opt/raspberrycloud
 mkdir -p /var/www/raspberrycloud
 mkdir -p /var/log/raspberrycloud
-mkdir -p /mnt/cloud_storage/{users,shares,temp,backups}
+
+# 询问存储方案
+echo ""
+read -p "使用SD卡存储还是外接硬盘存储? (sd/hdd) [默认:sd] " -n 3 -r
+echo
+STORAGE_TYPE=${REPLY:-sd}
+
+if [[ $STORAGE_TYPE =~ ^[Hh][Dd][Dd]$ ]]; then
+    print_info "使用外接硬盘存储方案..."
+    mkdir -p /mnt/cloud_storage/{users,shares,temp,backups}
+    chown -R www-data:www-data /mnt/cloud_storage
+    STORAGE_PATH="/mnt/cloud_storage"
+else
+    print_info "使用SD卡存储方案..."
+    mkdir -p /opt/raspberrycloud/storage/{users,shares,temp,backups}
+    STORAGE_PATH="/opt/raspberrycloud/storage"
+fi
 
 # 设置权限
 chown -R www-data:www-data /opt/raspberrycloud
 chown -R www-data:www-data /var/www/raspberrycloud
 chown -R www-data:www-data /var/log/raspberrycloud
-chown -R www-data:www-data /mnt/cloud_storage
 
 # 复制文件
 print_info "复制项目文件..."
@@ -134,6 +149,17 @@ if [ ! -f .env ]; then
         # 生成随机密钥
         SECRET_KEY=$(openssl rand -hex 32)
         sed -i "s/your-secret-key-change-this-in-production-use-openssl-rand-hex-32/$SECRET_KEY/" .env
+        
+        # 根据存储方案修改路径
+        if [[ ! $STORAGE_TYPE =~ ^[Hh][Dd][Dd]$ ]]; then
+            print_info "配置SD卡存储路径..."
+            sed -i "s|STORAGE_PATH=/mnt/cloud_storage/users|STORAGE_PATH=/opt/raspberrycloud/storage/users|" .env
+            sed -i "s|SHARE_PATH=/mnt/cloud_storage/shares|SHARE_PATH=/opt/raspberrycloud/storage/shares|" .env
+            sed -i "s|TEMP_PATH=/mnt/cloud_storage/temp|TEMP_PATH=/opt/raspberrycloud/storage/temp|" .env
+            sed -i "s|BACKUP_PATH=/mnt/cloud_storage/backups|BACKUP_PATH=/opt/raspberrycloud/storage/backups|" .env
+            # SD卡方案使用较小的默认配额
+            sed -i "s|DEFAULT_USER_QUOTA=107374182400|DEFAULT_USER_QUOTA=21474836480|" .env
+        fi
         
         print_info "环境变量已配置，请检查 /opt/raspberrycloud/.env 文件"
     else
@@ -177,10 +203,34 @@ ufw --force enable
 
 # 配置Samba
 print_info "配置Samba..."
-if [ -f "$SCRIPT_DIR/config/smb.conf.append" ]; then
-    cat "$SCRIPT_DIR/config/smb.conf.append" >> /etc/samba/smb.conf
-    systemctl restart smbd
+if [[ $STORAGE_TYPE =~ ^[Hh][Dd][Dd]$ ]]; then
+    SMB_PATH="/mnt/cloud_storage/users"
+else
+    SMB_PATH="/opt/raspberrycloud/storage/users"
 fi
+
+# 添加Samba配置
+cat >> /etc/samba/smb.conf << EOF
+
+[cloud]
+   comment = RaspberryCloud Storage
+   path = $SMB_PATH
+   browseable = yes
+   writable = yes
+   valid users = @cloud-users
+   create mask = 0664
+   directory mask = 0775
+   force user = www-data
+   force group = www-data
+EOF
+
+# 创建用户组
+groupadd -f cloud-users
+usermod -aG cloud-users www-data
+
+# 重启Samba
+systemctl restart smbd
+systemctl enable smbd
 
 # 检查服务状态
 print_info "检查服务状态..."
@@ -226,4 +276,5 @@ echo "  1. 访问Web界面并登录"
 echo "  2. 修改默认管理员密码"
 echo "  3. 查看文档配置HTTPS和外网访问: docs/03-多端访问配置.md"
 echo ""
+
 

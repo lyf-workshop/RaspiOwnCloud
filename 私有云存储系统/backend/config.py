@@ -25,10 +25,12 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./raspberrycloud.db"
     
     # 存储路径配置
-    STORAGE_PATH: str = "/mnt/cloud_storage/users"
-    SHARE_PATH: str = "/mnt/cloud_storage/shares"
-    TEMP_PATH: str = "/mnt/cloud_storage/temp"
-    BACKUP_PATH: str = "/mnt/cloud_storage/backups"
+    # 默认使用SD卡存储（适合64GB SD卡，无外接硬盘）
+    # 如需使用外接硬盘，在.env中修改为 /mnt/cloud_storage/*
+    STORAGE_PATH: str = "/opt/raspberrycloud/storage/users"
+    SHARE_PATH: str = "/opt/raspberrycloud/storage/shares"
+    TEMP_PATH: str = "/opt/raspberrycloud/storage/temp"
+    BACKUP_PATH: str = "/opt/raspberrycloud/storage/backups"
     
     # 文件限制
     MAX_FILE_SIZE: int = 10 * 1024 * 1024 * 1024  # 10GB
@@ -47,7 +49,8 @@ class Settings(BaseSettings):
     ADMIN_EMAIL: str = "admin@raspberrycloud.local"
     
     # 默认用户配额（字节）
-    DEFAULT_USER_QUOTA: int = 100 * 1024 * 1024 * 1024  # 100GB
+    # SD卡方案（64GB）：建议20GB，外接硬盘方案可设置为100GB
+    DEFAULT_USER_QUOTA: int = 20 * 1024 * 1024 * 1024  # 20GB（SD卡方案）
     
     # 分享链接配置
     SHARE_LINK_LENGTH: int = 8
@@ -122,4 +125,5 @@ settings = Settings()
 
 # 确保目录存在
 settings.ensure_directories()
+
 
