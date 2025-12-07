@@ -1,0 +1,33 @@
+# FastAPI核心
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+aiofiles==23.2.1
+
+# 认证与安全
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.0
+
+# 数据库
+sqlalchemy==2.0.23
+alembic==1.12.1
+pymysql==1.1.0  # MySQL连接器（可选）
+cryptography==41.0.7  # MySQL依赖
+
+# 文件处理
+pillow==10.1.0
+python-magic==0.4.27
+pypdf2==3.0.1
+
+# 工具
+pydantic==2.5.0
+pydantic-settings==2.1.0
+httpx==0.25.2
+websockets==12.0
+qrcode==7.4.2  # 分享二维码
+
+# 日期时间
+python-dateutil==2.8.2
+pytz==2023.3
+

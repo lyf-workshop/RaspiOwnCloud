@@ -1,0 +1,46 @@
+[Unit]
+Description=RaspberryCloud Private Cloud Storage Service
+Documentation=https://github.com/your-repo/raspberrycloud
+After=network.target
+# 如果使用MariaDB，取消注释下一行
+# After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/raspberrycloud/backend
+Environment="PATH=/opt/raspberrycloud/venv/bin"
+Environment="PYTHONUNBUFFERED=1"
+
+# 启动命令
+ExecStart=/opt/raspberrycloud/venv/bin/uvicorn main:app \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --workers 2 \
+    --log-level info
+
+# 自动重启
+Restart=always
+RestartSec=10
+
+# 资源限制
+LimitNOFILE=65536
+MemoryLimit=512M
+CPUQuota=100%
+
+# 日志
+StandardOutput=append:/var/log/raspberrycloud/backend.log
+StandardError=append:/var/log/raspberrycloud/backend_error.log
+SyslogIdentifier=raspberrycloud
+
+# 安全加固
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/mnt/cloud_storage /opt/raspberrycloud/backend
+
+[Install]
+WantedBy=multi-user.target
+

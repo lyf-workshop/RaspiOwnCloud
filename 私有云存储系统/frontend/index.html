@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaspberryCloud - 私有云存储</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <i class="fas fa-raspberry-pi logo-icon"></i>
+            <h1 class="logo">RaspberryCloud</h1>
+        </div>
+        
+        <div class="header-center">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="搜索文件和文件夹...">
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="user-info">
+                <span class="user-name" id="username">加载中...</span>
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="showUserSettings()"><i class="fas fa-cog"></i> 设置</a>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 左侧边栏 -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <button class="nav-item active" onclick="switchView('all')">
+                    <i class="fas fa-folder"></i>
+                    <span>全部文件</span>
+                </button>
+                <button class="nav-item" onclick="switchView('image')">
+                    <i class="fas fa-image"></i>
+                    <span>图片</span>
+                </button>
+                <button class="nav-item" onclick="switchView('video')">
+                    <i class="fas fa-video"></i>
+                    <span>视频</span>
+                </button>
+                <button class="nav-item" onclick="switchView('audio')">
+                    <i class="fas fa-music"></i>
+                    <span>音乐</span>
+                </button>
+                <button class="nav-item" onclick="switchView('document')">
+                    <i class="fas fa-file-alt"></i>
+                    <span>文档</span>
+                </button>
+                <button class="nav-item" onclick="showMyShares()">
+                    <i class="fas fa-share-nodes"></i>
+                    <span>我的分享</span>
+                </button>
+            </nav>
+            
+            <div class="storage-info">
+                <div class="storage-label">存储空间</div>
+                <div class="storage-bar">
+                    <div class="storage-used" id="storage-used" style="width: 0%"></div>
+                </div>
+                <div class="storage-text" id="storage-text">0 GB / 100 GB</div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="content">
+            <!-- 工具栏 -->
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" onclick="showUploadDialog()">
+                        <i class="fas fa-upload"></i> 上传文件
+                    </button>
+                    <button class="btn btn-secondary" onclick="showCreateFolderDialog()">
+                        <i class="fas fa-folder-plus"></i> 新建文件夹
+                    </button>
+                </div>
+                
+                <div class="toolbar-right">
+                    <button class="btn-icon" onclick="refreshFiles()" title="刷新">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="btn-icon" onclick="toggleView('grid')" title="网格视图">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="btn-icon active" onclick="toggleView('list')" title="列表视图">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 面包屑导航 -->
+            <div class="breadcrumb" id="breadcrumb">
+                <a href="#" onclick="navigateToFolder(null)">
+                    <i class="fas fa-home"></i> 全部文件
+                </a>
+            </div>
+
+            <!-- 文件列表 -->
+            <div class="file-list" id="file-list">
+                <!-- 列表头 -->
+                <div class="file-list-header">
+                    <div class="file-col-name">文件名</div>
+                    <div class="file-col-size">大小</div>
+                    <div class="file-col-date">修改日期</div>
+                    <div class="file-col-actions">操作</div>
+                </div>
+                
+                <!-- 文件项将通过JS动态加载 -->
+                <div id="file-items" class="file-items">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 上传对话框 -->
+    <div class="modal" id="upload-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>上传文件</h3>
+                <button class="modal-close" onclick="closeModal('upload-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>点击选择文件或拖拽文件到此处</p>
+                    <input type="file" id="file-input" multiple hidden>
+                </div>
+                <div class="upload-list" id="upload-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建文件夹对话框 -->
+    <div class="modal" id="folder-modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>新建文件夹</h3>
+                <button class="modal-close" onclick="closeModal('folder-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="folder-name" placeholder="请输入文件夹名称" class="input-text">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('folder-modal')">取消</button>
+                <button class="btn btn-primary" onclick="createFolder()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享对话框 -->
+    <div class="modal" id="share-modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>创建分享链接</h3>
+                <button class="modal-close" onclick="closeModal('share-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>有效期</label>
+                    <select id="share-expire" class="input-text">
+                        <option value="1">1天</option>
+                        <option value="3">3天</option>
+                        <option value="7" selected>7天</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="share-need-code">
+                        需要提取码
+                    </label>
+                </div>
+                <div id="share-result" class="share-result" style="display: none;">
+                    <p><strong>分享链接：</strong></p>
+                    <div class="copy-box">
+                        <input type="text" id="share-link" readonly class="input-text">
+                        <button class="btn btn-secondary" onclick="copyShareLink()">复制</button>
+                    </div>
+                    <p id="share-code-info" style="margin-top: 10px;"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('share-modal')">关闭</button>
+                <button class="btn btn-primary" id="create-share-btn" onclick="createShare()">创建分享</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文件预览对话框 -->
+    <div class="modal" id="preview-modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="preview-title">文件预览</h3>
+                <button class="modal-close" onclick="closeModal('preview-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="preview-content" class="preview-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载脚本 -->
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/preview.js"></script>
+</body>
+</html>
+
