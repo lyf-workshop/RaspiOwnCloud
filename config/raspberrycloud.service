@@ -34,12 +34,9 @@ StandardOutput=append:/var/log/raspberrycloud/backend.log
 StandardError=append:/var/log/raspberrycloud/backend_error.log
 SyslogIdentifier=raspberrycloud
 
-# 安全加固
-NoNewPrivileges=true
-PrivateTmp=true
-ProtectSystem=strict
-ProtectHome=true
-ReadWritePaths=/mnt/cloud_storage /opt/raspberrycloud/backend
+# 安全加固（暂时禁用以避免命名空间冲突，生产环境可逐步启用）
+# NoNewPrivileges=true
+# ReadWritePaths=/opt/raspberrycloud/storage /opt/raspberrycloud/backend /var/log/raspberrycloud /mnt/cloud_storage
 
 [Install]
 WantedBy=multi-user.target
