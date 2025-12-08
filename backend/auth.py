@@ -6,7 +6,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -16,7 +16,7 @@ from config import settings
 
 
 # OAuth2密码bearer token
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
 
 
 class Token(BaseModel):
@@ -120,14 +120,17 @@ def verify_token(token: str) -> TokenData:
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    token: Optional[str] = Depends(oauth2_scheme),
+    token_param: Optional[str] = Query(None, alias="token"),
     db: Session = Depends(get_db)
 ) -> User:
     """
     获取当前登录用户（依赖注入）
+    支持从 Header 或 URL 参数获取 token
     
     Args:
-        token: JWT token
+        token: JWT token (从 Header)
+        token_param: JWT token (从 URL 参数)
         db: 数据库会话
     
     Returns:
@@ -136,7 +139,17 @@ def get_current_user(
     Raises:
         HTTPException: 用户不存在或未激活
     """
-    token_data = verify_token(token)
+    # 优先使用 Header 中的 token，如果没有则使用 URL 参数中的 token
+    auth_token = token or token_param
+    
+    if not auth_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    token_data = verify_token(auth_token)
     
     user = db.query(User).filter(User.id == token_data.user_id).first()
     
@@ -193,11 +206,22 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
     user = db.query(User).filter(User.username == username).first()
     
     if not user:
+        print(f"[AUTH] 用户不存在: {username}")
         return None
     
-    if not user.verify_password(password):
+    if not user.is_active:
+        print(f"[AUTH] 用户未激活: {username}")
         return None
     
+    # 验证密码
+    password_valid = user.verify_password(password)
+    print(f"[AUTH] 用户: {username}, 密码验证: {password_valid}, 密码长度: {len(password)}")
+    
+    if not password_valid:
+        print(f"[AUTH] 密码验证失败: {username}")
+        return None
+    
+    print(f"[AUTH] 登录成功: {username}")
     return user
 
 

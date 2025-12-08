@@ -79,14 +79,19 @@ async def login(user_data: UserLogin, db: Session = Depends(get_db)):
     
     返回JWT access token
     """
+    print(f"[LOGIN] 登录请求: username={user_data.username}, password_length={len(user_data.password)}")
+    
     user = authenticate_user(db, user_data.username, user_data.password)
     
     if not user:
+        print(f"[LOGIN] 登录失败: {user_data.username}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="用户名或密码错误",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+    print(f"[LOGIN] 登录成功: {user_data.username}")
     
     # 更新最后登录时间
     user.last_login = datetime.utcnow()

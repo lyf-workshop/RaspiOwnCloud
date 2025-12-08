@@ -244,7 +244,33 @@ async function createFolder() {
  */
 async function downloadFile(fileId) {
     const token = utils.getToken();
-    window.open(`${API_BASE_URL}/files/download/${fileId}?token=${token}`, '_blank');
+    // 使用 Header 方式传递 token（更安全）
+    // 由于 window.open 无法设置 Header，使用 fetch 下载
+    fetch(`${API_BASE_URL}/files/download/${fileId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('下载失败');
+        return response.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName || 'download';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    })
+    .catch(error => {
+        console.error('下载错误:', error);
+        alert('下载失败: ' + error.message);
+        // 降级方案：使用 URL 参数方式
+        window.open(`${API_BASE_URL}/files/download/${fileId}?token=${token}`, '_blank');
+    });
 }
 
 /**
