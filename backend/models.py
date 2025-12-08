@@ -69,12 +69,44 @@ class User(Base):
     
     def verify_password(self, password: str) -> bool:
         """验证密码"""
-        return pwd_context.verify(password, self.hashed_password)
+        try:
+            # 方法1: 直接验证密码（正常情况）
+            result = pwd_context.verify(password, self.hashed_password)
+            if result:
+                return True
+            
+            # 方法2: 如果密码超过72字节，尝试先SHA256再验证（向后兼容）
+            if len(password.encode('utf-8')) > 72:
+                import hashlib
+                hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+                result = pwd_context.verify(hashed_password, self.hashed_password)
+                if result:
+                    return True
+            
+            # 验证失败
+            return False
+        except Exception as e:
+            print(f"密码验证异常: {e}, 密码长度: {len(password.encode('utf-8'))}, 哈希前缀: {self.hashed_password[:20]}")
+            import traceback
+            traceback.print_exc()
+            return False
     
     @staticmethod
     def hash_password(password: str) -> str:
         """哈希密码"""
-        return pwd_context.hash(password)
+        # bcrypt 限制密码长度为 72 字节
+        # 对于超过 72 字节的密码，先进行 SHA256 哈希
+        original_password = password
+        if len(password.encode('utf-8')) > 72:
+            import hashlib
+            # 先对长密码进行 SHA256 哈希，然后再用 bcrypt
+            password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+        
+        try:
+            return pwd_context.hash(password)
+        except Exception as e:
+            print(f"密码哈希错误: {e}, 密码长度: {len(original_password.encode('utf-8'))}")
+            raise
     
     def get_available_space(self) -> int:
         """获取可用空间"""
