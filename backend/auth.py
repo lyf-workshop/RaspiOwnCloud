@@ -38,6 +38,7 @@ class UserCreate(BaseModel):
     email: str
     password: str
     full_name: Optional[str] = None
+    verification_code: str  # 邮箱验证码
 
 
 class UserLogin(BaseModel):
@@ -227,18 +228,26 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
 
 def register_user(db: Session, user_data: UserCreate) -> User:
     """
-    注册新用户
+    注册新用户（需要邮箱验证码）
     
     Args:
         db: 数据库会话
-        user_data: 用户创建数据
+        user_data: 用户创建数据（包含验证码）
     
     Returns:
         新创建的User对象
     
     Raises:
-        HTTPException: 用户名或邮箱已存在
+        HTTPException: 用户名或邮箱已存在，或验证码错误
     """
+    # 验证邮箱验证码
+    from email_verification import verify_code
+    if not verify_code(db, user_data.email, user_data.verification_code):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="验证码错误或已过期，请重新获取"
+        )
+    
     # 检查用户名是否已存在
     existing_user = db.query(User).filter(User.username == user_data.username).first()
     if existing_user:

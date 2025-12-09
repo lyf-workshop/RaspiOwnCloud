@@ -32,4 +32,7 @@ qrcode==7.4.2  # 分享二维码
 python-dateutil==2.8.2
 pytz==2023.3
 
+# 邮件发送
+aiosmtplib==3.0.1  # 异步SMTP（可选）
+
 

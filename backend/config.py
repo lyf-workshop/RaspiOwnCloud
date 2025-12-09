@@ -56,6 +56,13 @@ class Settings(BaseSettings):
     SHARE_LINK_LENGTH: int = 8
     MAX_SHARE_DAYS: int = 7
     
+    # 邮件配置（邮箱验证）
+    SMTP_HOST: str = "smtp.qq.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = ""
+    
     # 缩略图配置
     THUMBNAIL_SIZE: tuple = (200, 200)
     PREVIEW_SIZE: tuple = (1920, 1080)

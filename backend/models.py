@@ -267,8 +267,17 @@ class SyncRecord(Base):
 
 def init_db():
     """初始化数据库"""
-    # 创建所有表
+    # 创建所有表（包括验证码表）
+    # 注意：需要在导入email_verification之前确保Base已定义
     Base.metadata.create_all(bind=engine)
+    
+    # 导入验证码模型（确保表被创建）
+    try:
+        from email_verification import EmailVerificationCode
+        # 再次创建表，确保验证码表被创建
+        Base.metadata.create_all(bind=engine)
+    except ImportError:
+        pass  # 如果导入失败，忽略（可能在某些情况下）
     
     # 创建默认管理员账户
     db = SessionLocal()

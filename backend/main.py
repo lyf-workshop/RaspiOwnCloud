@@ -19,6 +19,7 @@ from auth import (
     authenticate_user, create_access_token, get_current_user, get_current_admin_user,
     register_user, update_user_password, UserCreate, UserLogin, UserResponse, Token
 )
+from email_verification import send_verification_code, verify_code
 from file_handler import FileService
 from share import ShareService, ShareCreate, ShareResponse, ShareAccessRequest
 
@@ -55,14 +56,43 @@ async def health_check():
 
 # ==================== 用户认证 ====================
 
+@app.post("/api/auth/send-verification-code")
+async def send_code(email: str, db: Session = Depends(get_db)):
+    """
+    发送邮箱验证码
+    
+    - **email**: 邮箱地址
+    """
+    # 验证邮箱格式
+    import re
+    if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="邮箱格式不正确"
+        )
+    
+    # 检查邮箱是否已被注册
+    existing_user = db.query(User).filter(User.email == email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="该邮箱已被注册"
+        )
+    
+    # 发送验证码
+    result = send_verification_code(db, email)
+    return result
+
+
 @app.post("/api/auth/register", response_model=UserResponse)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     """
-    用户注册
+    用户注册（需要邮箱验证码）
     
     - **username**: 用户名（3-20字符）
     - **email**: 邮箱地址
     - **password**: 密码（至少8位）
+    - **verification_code**: 邮箱验证码
     - **full_name**: 全名（可选）
     """
     user = register_user(db, user_data)
