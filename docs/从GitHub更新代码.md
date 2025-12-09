@@ -268,3 +268,6 @@ pip install -r requirements.txt
 sudo chown -R www-data:www-data /var/www/raspberrycloud
 ```
 
+
+
+

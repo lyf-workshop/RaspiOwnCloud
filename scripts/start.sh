@@ -25,7 +25,7 @@ print_error() {
 }
 
 # 检查是否在正确的目录
-if [ ! -f "/opt/raspberrycloud/backend/main.py" ]; then
+if [ ! -f "/opt/raspberrycloud/main.py" ]; then
     print_error "未找到后端文件，请确保已正确安装"
     exit 1
 fi
