@@ -1,4 +1,4 @@
-# 树莓派私有云存储系统 (RaspberryCloud)
+<img width="2547" height="1183" alt="image" src="https://github.com/user-attachments/assets/d951b884-072f-400a-9617-2f85f77e2f4e" /># 树莓派私有云存储系统 (RaspberryCloud)
 
 完整的私有云存储解决方案，功能对标百度网盘，专为树莓派优化。
 
@@ -225,6 +225,9 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ## 📄 开源协议
 
 MIT License
+##项目展示
+
+
 
 ## 🙋 技术支持
 
