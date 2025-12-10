@@ -31,32 +31,44 @@ API_ENDPOINT = 'https://alidns.aliyuncs.com'
 
 def get_current_ip():
     """获取当前公网IP"""
-    try:
-        # 方法1: ip.sb
-        response = urllib.request.urlopen('https://ip.sb', timeout=10)
-        ip = response.read().decode('utf-8').strip()
-        if ip and '.' in ip:
-            return ip
-    except:
-        pass
+    # 创建请求头，模拟浏览器
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    }
     
-    try:
-        # 方法2: ifconfig.me
-        response = urllib.request.urlopen('https://ifconfig.me', timeout=10)
-        ip = response.read().decode('utf-8').strip()
-        if ip and '.' in ip:
-            return ip
-    except:
-        pass
+    # IP查询服务列表（按优先级）
+    ip_services = [
+        'https://api.ip.sb/ip',           # ip.sb API端点
+        'https://ifconfig.me/ip',          # ifconfig.me
+        'https://api.ipify.org?format=text',  # ipify
+        'https://ipinfo.io/ip',           # ipinfo.io
+        'https://icanhazip.com',          # icanhazip
+        'https://api.myip.com',           # myip.com (返回JSON)
+    ]
     
-    try:
-        # 方法3: ipinfo.io
-        response = urllib.request.urlopen('https://ipinfo.io/ip', timeout=10)
-        ip = response.read().decode('utf-8').strip()
-        if ip and '.' in ip:
-            return ip
-    except:
-        pass
+    for service_url in ip_services:
+        try:
+            req = urllib.request.Request(service_url, headers=headers)
+            response = urllib.request.urlopen(req, timeout=10)
+            content = response.read().decode('utf-8').strip()
+            
+            # 处理JSON响应（如myip.com）
+            if content.startswith('{'):
+                import json
+                data = json.loads(content)
+                ip = data.get('ip', '')
+            else:
+                ip = content
+            
+            # 验证IP格式（简单验证）
+            if ip and '.' in ip and len(ip.split('.')) == 4:
+                # 进一步验证每个段都是数字
+                parts = ip.split('.')
+                if all(part.isdigit() and 0 <= int(part) <= 255 for part in parts):
+                    return ip
+        except Exception as e:
+            print(f"[DEBUG] {service_url} 失败: {e}")
+            continue
     
     return None
 
@@ -112,8 +124,27 @@ def call_aliyun_api(action, params):
     # 发送请求
     try:
         response = urllib.request.urlopen(url, timeout=10)
-        result = json.loads(response.read().decode('utf-8'))
+        result_text = response.read().decode('utf-8')
+        result = json.loads(result_text)
+        
+        # 检查是否有错误
+        if 'Code' in result and result['Code'] != 'DomainRecordDuplicate':
+            print(f"[ERROR] API返回错误: {result.get('Code', 'Unknown')} - {result.get('Message', 'Unknown error')}")
+            print(f"[DEBUG] 完整响应: {result_text}")
+            return None
+        
         return result
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode('utf-8')
+        print(f"[ERROR] API调用失败: HTTP {e.code}")
+        print(f"[DEBUG] 错误响应: {error_body}")
+        try:
+            error_json = json.loads(error_body)
+            print(f"[ERROR] 错误代码: {error_json.get('Code', 'Unknown')}")
+            print(f"[ERROR] 错误消息: {error_json.get('Message', 'Unknown error')}")
+        except:
+            pass
+        return None
     except Exception as e:
         print(f"[ERROR] API调用失败: {e}")
         return None
@@ -121,11 +152,17 @@ def call_aliyun_api(action, params):
 
 def get_dns_record():
     """获取DNS记录"""
+    # 如果SUBDOMAIN是@，查询时应该使用空字符串或@
+    rr_keyword = '' if SUBDOMAIN == '@' else SUBDOMAIN
+    
     params = {
         'DomainName': DOMAIN,
-        'RRKeyWord': SUBDOMAIN,
         'Type': 'A',
     }
+    
+    # 如果有子域名关键词，添加搜索条件
+    if rr_keyword:
+        params['RRKeyWord'] = rr_keyword
     
     result = call_aliyun_api('DescribeDomainRecords', params)
     
@@ -133,20 +170,25 @@ def get_dns_record():
         records = result['DomainRecords']['Record']
         # 查找匹配的记录
         for record in records:
-            if record.get('RR') == SUBDOMAIN and record.get('Type') == 'A':
+            record_rr = record.get('RR', '')
+            # @ 在API中可能返回为空字符串
+            if (record_rr == SUBDOMAIN or (SUBDOMAIN == '@' and record_rr == '')) and record.get('Type') == 'A':
                 return record
     
     return None
 
 
-def update_dns_record(record_id, new_ip):
+def update_dns_record(record_id, new_ip, current_record):
     """更新DNS记录"""
+    # 如果SUBDOMAIN是@，RR应该使用空字符串
+    rr_value = '' if SUBDOMAIN == '@' else SUBDOMAIN
+    
     params = {
         'RecordId': record_id,
-        'RR': SUBDOMAIN,
+        'RR': rr_value,
         'Type': 'A',
         'Value': new_ip,
-        'TTL': 600,  # 10分钟
+        'TTL': current_record.get('TTL', 600),  # 保持原有TTL或使用默认值
     }
     
     result = call_aliyun_api('UpdateDomainRecord', params)
@@ -154,7 +196,8 @@ def update_dns_record(record_id, new_ip):
     if result and 'RecordId' in result:
         return True
     else:
-        print(f"[ERROR] 更新DNS记录失败: {result}")
+        if result:
+            print(f"[ERROR] 更新DNS记录失败: {result}")
         return False
 
 
@@ -199,8 +242,9 @@ def main():
     
     # 更新DNS记录
     print(f"[INFO] IP已变化，正在更新DNS记录...")
-    if update_dns_record(record_id, current_ip):
-        print(f"[SUCCESS] DNS记录已更新: {SUBDOMAIN}.{DOMAIN} -> {current_ip}")
+    if update_dns_record(record_id, current_ip, record):
+        display_name = DOMAIN if SUBDOMAIN == '@' else f"{SUBDOMAIN}.{DOMAIN}"
+        print(f"[SUCCESS] DNS记录已更新: {display_name} -> {current_ip}")
     else:
         print(f"[ERROR] DNS记录更新失败")
         sys.exit(1)
