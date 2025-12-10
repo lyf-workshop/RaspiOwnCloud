@@ -205,8 +205,12 @@
                     method: 'POST'
                 });
                 
+                // 记录响应状态，便于调试
+                console.log('发送验证码响应状态:', response.status, response.statusText);
+                
                 if (response.ok) {
                     const result = await response.json();
+                    console.log('发送验证码成功:', result);
                     emailTip.textContent = '验证码已发送到您的邮箱，请查收（10分钟内有效）';
                     emailTip.style.color = '#28a745';
                     
@@ -223,13 +227,23 @@
                         }
                     }, 1000);
                 } else {
-                    const error = await response.json();
-                    alert('发送验证码失败：' + (error.detail || '未知错误'));
+                    // 尝试解析错误信息
+                    let errorMessage = '未知错误';
+                    try {
+                        const error = await response.json();
+                        errorMessage = error.detail || error.message || '未知错误';
+                        console.error('发送验证码失败:', error);
+                    } catch (e) {
+                        // 如果无法解析JSON，使用状态文本
+                        errorMessage = response.statusText || `HTTP ${response.status}`;
+                        console.error('无法解析错误响应:', e);
+                    }
+                    alert('发送验证码失败：' + errorMessage);
                     sendBtn.disabled = false;
                 }
             } catch (error) {
-                console.error('发送验证码错误:', error);
-                alert('发送验证码失败：' + error.message);
+                console.error('发送验证码网络错误:', error);
+                alert('发送验证码失败：' + (error.message || '网络错误，请检查网络连接'));
                 sendBtn.disabled = false;
             }
         });
