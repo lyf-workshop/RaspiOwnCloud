@@ -2,6 +2,13 @@
 #
 # 从 GitHub 更新代码脚本
 # 适用于项目在 ~/Desktop/Github/RaspiOwnCloud 的情况
+# 
+# 使用方法：
+#   cd ~/Desktop/Github/RaspiOwnCloud
+#   sudo bash scripts/update_from_github.sh
+#
+# 或者直接运行：
+#   sudo bash ~/Desktop/Github/RaspiOwnCloud/scripts/update_from_github.sh
 #
 
 set -e
@@ -85,17 +92,57 @@ cd "$PROJECT_DIR"
 # 保存本地修改（如果有）
 if ! git diff --quiet || ! git diff --cached --quiet; then
     print_warn "检测到未提交的修改"
-    read -p "是否保存本地修改? (y/n) " -n 1 -r
+    echo "选项："
+    echo "  1) 保存本地修改后拉取（推荐）"
+    echo "  2) 丢弃本地修改，使用远程版本"
+    echo "  3) 取消更新"
+    read -p "请选择 (1/2/3): " -n 1 -r
     echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if [[ $REPLY =~ ^[1]$ ]]; then
         git stash
-        print_info "本地修改已保存"
+        print_info "本地修改已保存到stash"
+        STASHED=true
+    elif [[ $REPLY =~ ^[2]$ ]]; then
+        print_warn "⚠️  将丢弃所有本地修改！"
+        read -p "确认继续? (yes/no): " -r
+        if [[ $REPLY == "yes" ]]; then
+            git reset --hard HEAD
+            print_info "本地修改已丢弃"
+        else
+            print_info "已取消更新"
+            exit 0
+        fi
+    else
+        print_info "已取消更新"
+        exit 0
     fi
 fi
 
 # 拉取代码
+print_info "从远程拉取最新代码..."
 git fetch origin
-git pull origin main || git pull origin master
+if git pull origin main 2>/dev/null || git pull origin master 2>/dev/null; then
+    print_info "代码拉取成功"
+else
+    print_error "代码拉取失败，可能有冲突"
+    if [ "$STASHED" = true ]; then
+        print_info "恢复本地修改..."
+        git stash pop || print_warn "恢复本地修改时可能有冲突，请手动解决"
+    fi
+    exit 1
+fi
+
+# 如果有保存的本地修改，尝试恢复
+if [ "$STASHED" = true ]; then
+    print_info "尝试恢复本地修改..."
+    if git stash pop; then
+        print_info "本地修改已恢复"
+    else
+        print_warn "恢复本地修改时出现冲突，请手动解决："
+        print_warn "  1. 编辑冲突文件"
+        print_warn "  2. 解决冲突后运行: git add . && git commit -m '解决冲突'"
+    fi
+fi
 
 print_info "代码更新完成"
 

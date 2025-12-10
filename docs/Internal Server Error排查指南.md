@@ -344,3 +344,5 @@ curl -X POST http://localhost/api/auth/login \
 3. 数据库文件是否存在（`ls -la /opt/raspberrycloud/backend/raspberrycloud.db`）
 4. .env文件内容（隐藏敏感信息后）
 
+
+
