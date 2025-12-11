@@ -31,17 +31,23 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# 运行Python脚本
-python3 "$PYTHON_SCRIPT" 2>&1
-
 # 记录日志（可选）
 LOG_FILE="/var/log/aliyun_dns_update.log"
 if [ -w "$LOG_FILE" ] || [ -w "$(dirname "$LOG_FILE")" ]; then
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 执行更新脚本" >> "$LOG_FILE"
+    # 有写权限，记录到日志文件
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 执行DNS更新脚本" >> "$LOG_FILE"
     python3 "$PYTHON_SCRIPT" >> "$LOG_FILE" 2>&1
+    EXIT_CODE=$?
+    if [ $EXIT_CODE -eq 0 ]; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] DNS更新完成（退出码: $EXIT_CODE）" >> "$LOG_FILE"
+    else
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] DNS更新失败（退出码: $EXIT_CODE）" >> "$LOG_FILE"
+    fi
+    exit $EXIT_CODE
 else
     # 如果没有写权限，直接输出到控制台
     python3 "$PYTHON_SCRIPT"
+    exit $?
 fi
 
 

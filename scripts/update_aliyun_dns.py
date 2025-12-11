@@ -123,7 +123,7 @@ def call_aliyun_api(action, params):
     
     # 发送请求
     try:
-        response = urllib.request.urlopen(url, timeout=10)
+        response = urllib.request.urlopen(url, timeout=15)
         result_text = response.read().decode('utf-8')
         result = json.loads(result_text)
         
@@ -135,15 +135,30 @@ def call_aliyun_api(action, params):
         
         return result
     except urllib.error.HTTPError as e:
-        error_body = e.read().decode('utf-8')
-        print(f"[ERROR] API调用失败: HTTP {e.code}")
-        print(f"[DEBUG] 错误响应: {error_body}")
         try:
-            error_json = json.loads(error_body)
-            print(f"[ERROR] 错误代码: {error_json.get('Code', 'Unknown')}")
-            print(f"[ERROR] 错误消息: {error_json.get('Message', 'Unknown error')}")
+            error_body = e.read().decode('utf-8')
+            print(f"[ERROR] API调用失败: HTTP {e.code}")
+            print(f"[DEBUG] 错误响应: {error_body}")
+            try:
+                error_json = json.loads(error_body)
+                print(f"[ERROR] 错误代码: {error_json.get('Code', 'Unknown')}")
+                print(f"[ERROR] 错误消息: {error_json.get('Message', 'Unknown error')}")
+            except:
+                pass
         except:
-            pass
+            print(f"[ERROR] API调用失败: HTTP {e.code}")
+        return None
+    except urllib.error.URLError as e:
+        # 网络错误（DNS解析失败、连接超时等）
+        error_msg = str(e)
+        if 'Temporary failure in name resolution' in error_msg or 'Name or service not known' in error_msg:
+            print(f"[WARNING] 网络错误: DNS解析失败，可能是临时网络问题")
+            print(f"[INFO] 建议: 检查网络连接，脚本将在下次定时任务时重试")
+        elif 'timed out' in error_msg.lower():
+            print(f"[WARNING] 网络错误: 连接超时，可能是网络不稳定")
+            print(f"[INFO] 建议: 检查网络连接，脚本将在下次定时任务时重试")
+        else:
+            print(f"[WARNING] 网络错误: {error_msg}")
         return None
     except Exception as e:
         print(f"[ERROR] API调用失败: {e}")
@@ -237,7 +252,8 @@ def main():
     current_ip = get_current_ip()
     
     if not current_ip:
-        print("[ERROR] 无法获取当前公网IP")
+        print("[ERROR] 无法获取当前公网IP，可能是网络问题")
+        print("[INFO] 建议: 检查网络连接，脚本将在下次定时任务时重试")
         sys.exit(1)
     
     print(f"[INFO] 当前公网IP: {current_ip}")
@@ -248,6 +264,10 @@ def main():
     
     if not record:
         print(f"[ERROR] 未找到DNS记录: {SUBDOMAIN}.{DOMAIN}")
+        print("[INFO] 可能原因:")
+        print("  1. 网络问题导致API调用失败")
+        print("  2. DNS记录不存在，请先在阿里云控制台创建")
+        print("  3. 配置的域名或子域名不正确")
         sys.exit(1)
     
     record_id = record['RecordId']
