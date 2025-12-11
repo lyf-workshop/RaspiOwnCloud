@@ -184,12 +184,78 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ## 📚 文档导航
 
+### 部署文档
 - [SD卡存储方案配置](docs/00-SD卡存储方案配置.md) ⭐ **SD卡用户必读**
 - [硬件准备与初始化](docs/01-硬件准备与初始化.md) - 树莓派系统烧录、初始配置
 - [系统部署教程](docs/02-系统部署教程.md) - 后端/前端/数据库/Nginx完整部署
 - [多端访问配置](docs/03-多端访问配置.md) - 局域网/外网/移动端访问设置
 - [安全加固指南](docs/04-安全加固指南.md) - HTTPS、防火墙、权限配置
 - [问题排查手册](docs/05-问题排查手册.md) - 常见问题及解决方案
+
+### 快速修复指南
+- [登录JSON错误修复](docs/快速修复-登录JSON错误.md) ⚡ **登录显示JSON错误时看这个**
+- [Internal Server Error排查](docs/Internal%20Server%20Error排查指南.md)
+- [SSL证书申请失败排查](docs/SSL证书申请失败排查.md)
+
+## ❓ 常见问题
+
+### 登录问题
+
+**Q: 登录时显示 "Unexpected token '<', "<html>... is not valid JSON" 错误？**
+
+A: 这是Nginx配置问题，查看 → [快速修复：登录JSON错误](docs/快速修复-登录JSON错误.md)
+
+**快速解决步骤：**
+```powershell
+# 在Windows笔记本上运行
+cd F:\Github\RaspiOwnCloud
+.\scripts\fix_nginx_remote.ps1
+```
+
+### 连接问题
+
+**Q: 无法访问树莓派 (http://192.168.137.51) ？**
+
+A: 检查网络连接和服务状态：
+```bash
+# SSH连接到树莓派
+ssh pi@192.168.137.51
+
+# 检查服务状态
+sudo systemctl status raspberrycloud
+sudo systemctl status nginx
+
+# 如果服务未运行，启动它们
+sudo systemctl start raspberrycloud
+sudo systemctl start nginx
+```
+
+**Q: 外网无法访问？**
+
+A: 查看 [外网访问无法访问排查](docs/外网访问无法访问排查.md)
+
+### 性能问题
+
+**Q: 上传/下载速度慢？**
+
+A: 检查以下因素：
+- 网线连接是否稳定（推荐千兆网线）
+- SD卡读写速度（推荐UHS-I以上）
+- 同时上传的文件数量（建议单文件上传）
+
+**Q: SD卡空间不足？**
+
+A: 清理不必要的文件：
+```bash
+# 查看空间使用
+df -h
+
+# 清理临时文件
+sudo rm -rf /tmp/*
+
+# 清理旧日志
+sudo journalctl --vacuum-time=7d
+```
 
 ## 💡 SD卡方案特别提示
 
