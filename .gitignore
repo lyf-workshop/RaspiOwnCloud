@@ -1,0 +1,34 @@
+# 阿里云DNS更新脚本（包含敏感配置信息）
+scripts/update_aliyun_dns.sh
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+
+# 日志文件
+*.log
+/var/log/
+
+# 环境配置文件
+.env
+*.env
+config/.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
