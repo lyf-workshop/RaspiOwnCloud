@@ -192,17 +192,13 @@ def get_dns_record():
 
 def update_dns_record(record_id, new_ip, current_record):
     """更新DNS记录"""
-    # 使用当前记录的RR值（保持一致性）
-    # 如果当前记录的RR是空字符串或@，使用空字符串
+    # 使用当前记录的RR值（保持完全一致）
+    # 阿里云API：如果记录的RR是'@'，更新时也必须使用'@'，不能使用空字符串
     current_rr = current_record.get('RR', '')
-    if current_rr == '@' or current_rr == '':
-        rr_value = ''
-    else:
-        rr_value = current_rr
     
-    # 如果SUBDOMAIN配置是@，也应该使用空字符串
-    if SUBDOMAIN == '@':
-        rr_value = ''
+    # 直接使用查询到的RR值，不做任何转换
+    # 因为阿里云API要求更新时的RR必须与现有记录的RR完全一致
+    rr_value = current_rr
     
     params = {
         'RecordId': record_id,
