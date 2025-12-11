@@ -152,17 +152,14 @@ def call_aliyun_api(action, params):
 
 def get_dns_record():
     """获取DNS记录"""
-    # 如果SUBDOMAIN是@，查询时应该使用空字符串或@
-    rr_keyword = '' if SUBDOMAIN == '@' else SUBDOMAIN
-    
     params = {
         'DomainName': DOMAIN,
         'Type': 'A',
     }
     
-    # 如果有子域名关键词，添加搜索条件
-    if rr_keyword:
-        params['RRKeyWord'] = rr_keyword
+    # 如果SUBDOMAIN不是@，添加RR搜索关键词
+    if SUBDOMAIN != '@':
+        params['RRKeyWord'] = SUBDOMAIN
     
     result = call_aliyun_api('DescribeDomainRecords', params)
     
@@ -171,17 +168,41 @@ def get_dns_record():
         # 查找匹配的记录
         for record in records:
             record_rr = record.get('RR', '')
-            # @ 在API中可能返回为空字符串
-            if (record_rr == SUBDOMAIN or (SUBDOMAIN == '@' and record_rr == '')) and record.get('Type') == 'A':
-                return record
+            # @ 在API中返回为空字符串
+            # 匹配逻辑：
+            # 1. 如果配置的是@，查找RR为空字符串的记录
+            # 2. 如果配置的是其他子域名，精确匹配
+            if SUBDOMAIN == '@':
+                if (record_rr == '' or record_rr == '@') and record.get('Type') == 'A':
+                    print(f"[DEBUG] 找到主域名记录: RecordId={record.get('RecordId')}, RR='{record_rr}', Value={record.get('Value')}")
+                    return record
+            else:
+                if record_rr == SUBDOMAIN and record.get('Type') == 'A':
+                    print(f"[DEBUG] 找到子域名记录: RecordId={record.get('RecordId')}, RR='{record_rr}', Value={record.get('Value')}")
+                    return record
+    
+    # 如果没有找到，列出所有A记录供调试
+    if result and 'DomainRecords' in result and 'Record' in result['DomainRecords']:
+        print(f"[DEBUG] 未找到匹配记录，当前域名下的所有A记录：")
+        for record in result['DomainRecords']['Record']:
+            print(f"  - RR='{record.get('RR', '')}', Type={record.get('Type')}, Value={record.get('Value')}")
     
     return None
 
 
 def update_dns_record(record_id, new_ip, current_record):
     """更新DNS记录"""
-    # 如果SUBDOMAIN是@，RR应该使用空字符串
-    rr_value = '' if SUBDOMAIN == '@' else SUBDOMAIN
+    # 使用当前记录的RR值（保持一致性）
+    # 如果当前记录的RR是空字符串或@，使用空字符串
+    current_rr = current_record.get('RR', '')
+    if current_rr == '@' or current_rr == '':
+        rr_value = ''
+    else:
+        rr_value = current_rr
+    
+    # 如果SUBDOMAIN配置是@，也应该使用空字符串
+    if SUBDOMAIN == '@':
+        rr_value = ''
     
     params = {
         'RecordId': record_id,
@@ -190,6 +211,9 @@ def update_dns_record(record_id, new_ip, current_record):
         'Value': new_ip,
         'TTL': current_record.get('TTL', 600),  # 保持原有TTL或使用默认值
     }
+    
+    # 调试信息
+    print(f"[DEBUG] 更新参数: RecordId={record_id}, RR='{rr_value}', Value={new_ip}, TTL={params['TTL']}")
     
     result = call_aliyun_api('UpdateDomainRecord', params)
     
