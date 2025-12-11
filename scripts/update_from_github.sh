@@ -1,7 +1,10 @@
 #!/bin/bash
 #
-# 从 GitHub 更新代码脚本
-# 适用于项目在 ~/Desktop/Github/RaspiOwnCloud 的情况
+# 从 GitHub 更新代码脚本（双文件夹部署架构）
+# 
+# 架构说明：
+#   更新文件夹：~/Desktop/Github/RaspiOwnCloud/ (从GitHub拉取代码)
+#   生产文件夹：/opt/raspberrycloud/ (实际运行的服务)
 # 
 # 使用方法：
 #   cd ~/Desktop/Github/RaspiOwnCloud
@@ -39,30 +42,46 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 print_info "========================================="
-print_info "从 GitHub 更新代码"
+print_info "从 GitHub 更新代码（双文件夹部署）"
 print_info "========================================="
 echo ""
 
-# 检测项目目录
+# 检测更新文件夹（开发目录）
 if [ -d "/home/pi/Desktop/Github/RaspiOwnCloud" ]; then
-    PROJECT_DIR="/home/pi/Desktop/Github/RaspiOwnCloud"
+    UPDATE_DIR="/home/pi/Desktop/Github/RaspiOwnCloud"
 elif [ -d "$HOME/Desktop/Github/RaspiOwnCloud" ]; then
-    PROJECT_DIR="$HOME/Desktop/Github/RaspiOwnCloud"
-elif [ -d "/opt/raspberrycloud" ] && [ -d "/opt/raspberrycloud/.git" ]; then
-    PROJECT_DIR="/opt/raspberrycloud"
+    UPDATE_DIR="$HOME/Desktop/Github/RaspiOwnCloud"
 else
-    read -p "请输入项目目录的完整路径: " PROJECT_DIR
-    if [ ! -d "$PROJECT_DIR" ]; then
-        print_error "目录不存在: $PROJECT_DIR"
-        exit 1
-    fi
+    print_error "未找到更新文件夹"
+    echo "请先创建更新文件夹："
+    echo "  mkdir -p ~/Desktop/Github"
+    echo "  cd ~/Desktop/Github"
+    echo "  git clone https://github.com/lyf-workshop/RaspiOwnCloud.git"
+    exit 1
 fi
 
-print_info "项目目录: $PROJECT_DIR"
+# 生产文件夹（固定路径）
+PROD_DIR="/opt/raspberrycloud"
 
-# 检查 Git 仓库
-if [ ! -d "$PROJECT_DIR/.git" ]; then
-    print_error "未检测到 Git 仓库"
+print_info "更新文件夹: $UPDATE_DIR"
+print_info "生产文件夹: $PROD_DIR"
+echo ""
+
+# 检查更新文件夹是否为Git仓库
+if [ ! -d "$UPDATE_DIR/.git" ]; then
+    print_error "更新文件夹不是Git仓库"
+    print_error "请重新克隆项目："
+    echo "  cd ~/Desktop/Github"
+    echo "  git clone https://github.com/lyf-workshop/RaspiOwnCloud.git"
+    exit 1
+fi
+
+# 检查生产文件夹是否存在
+if [ ! -d "$PROD_DIR" ]; then
+    print_error "生产文件夹不存在: $PROD_DIR"
+    print_error "请先创建生产文件夹："
+    echo "  sudo mkdir -p /opt/raspberrycloud"
+    echo "  sudo cp -r $UPDATE_DIR/{backend,frontend,config,scripts,docs} /opt/raspberrycloud/"
     exit 1
 fi
 
@@ -70,24 +89,22 @@ fi
 print_info "停止服务..."
 systemctl stop raspberrycloud 2>/dev/null || print_warn "服务未运行"
 
-# 备份当前版本
-print_info "备份当前版本..."
+# 备份当前生产版本
+print_info "备份当前生产版本..."
 BACKUP_DIR="/opt/raspberrycloud_backup_$(date +%Y%m%d_%H%M%S)"
-if [ -d "/opt/raspberrycloud" ]; then
-    cp -r /opt/raspberrycloud "$BACKUP_DIR"
-    print_info "备份保存在: $BACKUP_DIR"
-fi
+cp -r "$PROD_DIR" "$BACKUP_DIR"
+print_info "备份保存在: $BACKUP_DIR"
 
 # 备份配置文件
 print_info "备份配置文件..."
-if [ -f "/opt/raspberrycloud/.env" ]; then
-    cp /opt/raspberrycloud/.env /tmp/raspberrycloud.env.backup
+if [ -f "$PROD_DIR/backend/.env" ]; then
+    cp "$PROD_DIR/backend/.env" /tmp/raspberrycloud.env.backup
     print_info "已备份 .env 文件"
 fi
 
-# 拉取最新代码
-print_info "从 GitHub 拉取最新代码..."
-cd "$PROJECT_DIR"
+# 拉取最新代码到更新文件夹
+print_info "从 GitHub 拉取最新代码到更新文件夹..."
+cd "$UPDATE_DIR"
 
 # 保存本地修改（如果有）
 if ! git diff --quiet || ! git diff --cached --quiet; then
@@ -145,22 +162,29 @@ if [ "$STASHED" = true ]; then
 fi
 
 print_info "代码更新完成"
+echo ""
 
-# 复制后端文件
+# 从更新文件夹复制到生产文件夹
+print_info "========================================="
+print_info "部署到生产文件夹"
+print_info "========================================="
+echo ""
+
+# 复制后端文件到生产目录
 print_info "更新后端文件..."
-if [ -d "$PROJECT_DIR/backend" ]; then
-    cp -r "$PROJECT_DIR/backend"/* /opt/raspberrycloud/
-    chown -R www-data:www-data /opt/raspberrycloud
+if [ -d "$UPDATE_DIR/backend" ]; then
+    cp -r "$UPDATE_DIR/backend"/* "$PROD_DIR/backend/"
     print_info "后端文件已更新"
 else
     print_error "backend 目录不存在"
     exit 1
 fi
 
-# 复制前端文件
+# 复制前端文件到Web目录
 print_info "更新前端文件..."
-if [ -d "$PROJECT_DIR/frontend" ]; then
-    cp -r "$PROJECT_DIR/frontend"/* /var/www/raspberrycloud/
+if [ -d "$UPDATE_DIR/frontend" ]; then
+    mkdir -p /var/www/raspberrycloud
+    cp -r "$UPDATE_DIR/frontend"/* /var/www/raspberrycloud/
     chown -R www-data:www-data /var/www/raspberrycloud
     print_info "前端文件已更新"
 else
@@ -168,35 +192,47 @@ else
     exit 1
 fi
 
+# 复制脚本文件
+print_info "更新脚本文件..."
+if [ -d "$UPDATE_DIR/scripts" ]; then
+    mkdir -p "$PROD_DIR/scripts"
+    cp -r "$UPDATE_DIR/scripts"/* "$PROD_DIR/scripts/"
+    print_info "脚本文件已更新"
+fi
+
+# 设置生产目录权限
+print_info "设置生产目录权限..."
+chown -R www-data:www-data "$PROD_DIR"
+chmod -R 755 "$PROD_DIR"
+
 # 恢复配置文件
 if [ -f "/tmp/raspberrycloud.env.backup" ]; then
-    cp /tmp/raspberrycloud.env.backup /opt/raspberrycloud/.env
-    chown www-data:www-data /opt/raspberrycloud/.env
+    cp /tmp/raspberrycloud.env.backup "$PROD_DIR/backend/.env"
+    chown www-data:www-data "$PROD_DIR/backend/.env"
+    chmod 600 "$PROD_DIR/backend/.env"
     print_info "已恢复 .env 文件"
 fi
 
 # 更新 Python 依赖
 print_info "更新 Python 依赖..."
-cd /opt/raspberrycloud
-if [ -d "venv" ]; then
-    source venv/bin/activate
-    pip install --upgrade pip
-    pip install -r requirements.txt --upgrade
+cd "$PROD_DIR/backend"
+if [ -d "$PROD_DIR/venv" ]; then
+    sudo -u www-data bash -c "source $PROD_DIR/venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt --upgrade"
     print_info "Python 依赖已更新"
 else
     print_warn "虚拟环境不存在，跳过依赖更新"
 fi
 
 # 更新配置文件（如果需要）
-if [ -f "$PROJECT_DIR/config/raspberrycloud.service" ]; then
+if [ -f "$UPDATE_DIR/config/raspberrycloud.service" ]; then
     print_info "更新 systemd 服务配置..."
-    cp "$PROJECT_DIR/config/raspberrycloud.service" /etc/systemd/system/
+    cp "$UPDATE_DIR/config/raspberrycloud.service" /etc/systemd/system/
     systemctl daemon-reload
 fi
 
-if [ -f "$PROJECT_DIR/config/nginx.conf" ]; then
+if [ -f "$UPDATE_DIR/config/nginx.conf" ]; then
     print_info "更新 Nginx 配置..."
-    cp "$PROJECT_DIR/config/nginx.conf" /etc/nginx/sites-available/raspberrycloud
+    cp "$UPDATE_DIR/config/nginx.conf" /etc/nginx/sites-available/raspberrycloud
     nginx -t && systemctl reload nginx
 fi
 

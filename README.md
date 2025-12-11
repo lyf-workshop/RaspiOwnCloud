@@ -2,6 +2,11 @@
 
 完整的私有云存储解决方案，功能对标百度网盘，专为树莓派优化。
 
+> **📢 重要提示**：本项目采用**双文件夹部署架构**（最佳实践）
+> - 📁 **更新文件夹**：`~/Desktop/Github/RaspiOwnCloud/` - 用于Git操作和代码更新
+> - 📁 **生产文件夹**：`/opt/raspberrycloud/` - 实际运行的服务代码
+> - 📖 详细说明：[双文件夹部署架构说明](docs/双文件夹部署架构说明.md) | [快速参考](docs/快速参考-双文件夹部署.md)
+
 ## 📋 方案概述
 
 ### 系统架构
@@ -102,24 +107,59 @@ FastAPI 后端服务 (端口8000)
     └── update.sh               # 系统更新
 ```
 
-## 🚀 快速开始（SD卡方案）
+## 🚀 快速开始
 
-### 一键安装（推荐）
+### 部署架构说明 ⭐
 
-```bash
-cd RaspiOwnCloud
-sudo bash scripts/install.sh
+本项目采用**双文件夹部署架构**：
 
-# 安装时会询问存储方案，选择 "sd"（SD卡存储）
+```
+📁 更新文件夹：~/Desktop/Github/RaspiOwnCloud/
+   - 用途：从GitHub下载和更新代码
+   - 权限：普通用户（pi）
+
+📁 生产文件夹：/opt/raspberrycloud/
+   - 用途：实际运行的服务代码
+   - 权限：www-data用户（服务运行身份）
 ```
 
-### 手动安装
+### 首次部署步骤
+
+```bash
+# 1. 创建更新文件夹并克隆项目
+mkdir -p ~/Desktop/Github
+cd ~/Desktop/Github
+git clone https://github.com/lyf-workshop/RaspiOwnCloud.git
+cd RaspiOwnCloud
+
+# 2. 创建生产文件夹并复制文件
+sudo mkdir -p /opt/raspberrycloud
+sudo cp -r backend frontend config scripts docs /opt/raspberrycloud/
+sudo chown -R www-data:www-data /opt/raspberrycloud
+
+# 3. 运行安装脚本（会配置环境、安装依赖、启动服务）
+sudo bash scripts/install.sh
+```
+
+### 后续更新流程
+
+```bash
+# 1. 在更新文件夹拉取最新代码
+cd ~/Desktop/Github/RaspiOwnCloud
+git pull origin main
+
+# 2. 使用快速更新脚本部署到生产文件夹
+bash scripts/quick_update.sh
+```
+
+### 详细文档
 
 按照文档步骤操作：
-1. [SD卡存储方案配置](docs/00-SD卡存储方案配置.md) ⭐ **先看这个**
-2. [硬件准备与初始化](docs/01-硬件准备与初始化.md) - 跳过外接硬盘部分
-3. [系统部署教程](docs/02-系统部署教程.md)
-4. [手动部署命令](docs/手动部署命令.md) - 详细的命令列表
+1. [SD卡存储方案配置](docs/00-SD卡存储方案配置.md) ⭐ **SD卡用户先看这个**
+2. [硬件准备与初始化](docs/01-硬件准备与初始化.md)
+3. [系统部署教程](docs/02-系统部署教程.md) ⭐ **详细部署流程**
+4. [多端访问配置](docs/03-多端访问配置.md)
+5. [安全加固指南](docs/04-安全加固指南.md)
 
 ## 🏃 运行项目
 
@@ -132,23 +172,28 @@ sudo systemctl start raspberrycloud
 # 查看状态
 sudo systemctl status raspberrycloud
 
+# 重启服务
+sudo systemctl restart raspberrycloud
+
+# 查看日志
+sudo journalctl -u raspberrycloud -f
+
 # 访问Web界面
 # 浏览器打开: http://树莓派IP
 ```
 
-### 开发环境（本地Windows）
+### 文件夹说明
 
-```powershell
-# 使用启动脚本
-.\scripts\start.bat
+- **更新文件夹** (`~/Desktop/Github/RaspiOwnCloud/`)
+  - 用于Git操作：`git pull`, `git status`, `git log`
+  - 可以在这里修改代码、测试
+  - 不影响正在运行的服务
 
-# 或手动启动
-cd backend
-.\venv\Scripts\activate
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-详细运行指南：[项目运行指南](docs/项目运行指南.md)
+- **生产文件夹** (`/opt/raspberrycloud/`)
+  - systemd服务从这里读取代码运行
+  - 包含虚拟环境 `venv/`
+  - 包含配置文件 `.env`
+  - 不要直接在这里使用Git命令
 
 ## 📱 访问方式
 
@@ -184,7 +229,8 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ## 📚 文档导航
 
-### 部署文档
+### 核心部署文档
+- [双文件夹部署架构说明](docs/双文件夹部署架构说明.md) ⭐ **重要！先看这个了解部署架构**
 - [SD卡存储方案配置](docs/00-SD卡存储方案配置.md) ⭐ **SD卡用户必读**
 - [硬件准备与初始化](docs/01-硬件准备与初始化.md) - 树莓派系统烧录、初始配置
 - [系统部署教程](docs/02-系统部署教程.md) - 后端/前端/数据库/Nginx完整部署
@@ -192,10 +238,10 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 - [安全加固指南](docs/04-安全加固指南.md) - HTTPS、防火墙、权限配置
 - [问题排查手册](docs/05-问题排查手册.md) - 常见问题及解决方案
 
-### 快速修复指南
-- [登录JSON错误修复](docs/快速修复-登录JSON错误.md) ⚡ **登录显示JSON错误时看这个**
-- [Internal Server Error排查](docs/Internal%20Server%20Error排查指南.md)
-- [SSL证书申请失败排查](docs/SSL证书申请失败排查.md)
+### 功能配置文档
+- [邮箱验证功能配置](docs/邮箱验证功能配置.md) - 邮箱验证功能设置
+- [阿里云DNS更新脚本使用说明](docs/阿里云DNS更新脚本使用说明.md) - 动态域名解析
+- [阿里云RAM子账号配置指南](docs/阿里云RAM子账号配置指南.md) - 阿里云权限配置
 
 ## ❓ 常见问题
 
