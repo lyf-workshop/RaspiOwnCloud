@@ -84,3 +84,5 @@ echo "  - Nginx错误日志: tail -f /var/log/nginx/raspberrycloud_error.log"
 echo "  - 后端服务日志: sudo journalctl -u raspberrycloud -f"
 echo ""
 
+
+

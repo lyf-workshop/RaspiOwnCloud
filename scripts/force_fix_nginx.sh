@@ -171,3 +171,5 @@ echo "   - Nginx日志: tail -f /var/log/nginx/raspberrycloud_error.log"
 echo "   - 后端日志: journalctl -u raspberrycloud -f"
 echo ""
 
+
+

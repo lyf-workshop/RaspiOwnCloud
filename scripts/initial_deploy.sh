@@ -238,3 +238,4 @@ echo "  2. 请编辑 $PROD_DIR/backend/.env 配置数据库等信息"
 echo "  3. 如需初始化数据库，运行: cd $PROD_DIR/backend && sudo -u www-data bash -c 'source ../venv/bin/activate && python -c \"from models import init_db; init_db()\"'"
 echo ""
 
+
