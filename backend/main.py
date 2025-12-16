@@ -3,7 +3,7 @@ RaspberryCloud 主程序
 FastAPI后端服务入口
 """
 
-from fastapi import FastAPI, Depends, HTTPException, status, File as FastAPIFile, UploadFile, Form
+from fastapi import FastAPI, Depends, HTTPException, status, File as FastAPIFile, UploadFile, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -405,6 +405,7 @@ async def move_file(
 
 @app.post("/api/shares/create", response_model=ShareResponse)
 async def create_share(
+    request: Request,
     share_data: ShareCreate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -420,8 +421,10 @@ async def create_share(
     share_service = ShareService(db)
     share = share_service.create_share(current_user, share_data)
     
-    # 构建分享URL
-    base_url = "http://raspberrycloud.local"  # 生产环境应从配置读取
+    # 动态构建分享URL（从请求头获取）
+    host = request.headers.get("host", "localhost:8000")
+    scheme = request.url.scheme
+    base_url = f"{scheme}://{host}"
     share_url = f"{base_url}/share/{share.share_code}"
     
     return {

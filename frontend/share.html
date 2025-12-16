@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件分享 - RaspberryCloud</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .share-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        
+        .share-box {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .share-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .share-header .logo {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .share-header h2 {
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .file-info {
+            background: #f7f9fc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .file-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .file-info-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .file-info-item i {
+            font-size: 24px;
+            width: 40px;
+            color: #667eea;
+        }
+        
+        .file-info-item .info-text {
+            flex: 1;
+        }
+        
+        .file-info-item .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        
+        .file-info-item .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .extract-code-input {
+            margin-bottom: 20px;
+        }
+        
+        .extract-code-input label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .extract-code-input input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 3px;
+            transition: border-color 0.3s;
+        }
+        
+        .extract-code-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .download-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .download-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .share-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        .share-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .share-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .info-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .expired-badge {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="share-container">
+        <div class="share-box">
+            <div class="share-header">
+                <div class="logo">
+                    <i class="fas fa-raspberry-pi"></i>
+                </div>
+                <h2>RaspberryCloud 文件分享</h2>
+            </div>
+            
+            <div id="share-content">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>加载分享信息中...</p>
+                </div>
+            </div>
+            
+            <div class="share-footer">
+                <a href="/index.html">
+                    <i class="fas fa-home"></i> 返回首页
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/config.js"></script>
+    <script src="/js/share.js"></script>
+</body>
+</html>
+
+
+
+
+
+
