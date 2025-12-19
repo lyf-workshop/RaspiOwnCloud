@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        
         .share-container {
             min-height: 100vh;
             display: flex;
@@ -14,44 +25,97 @@
             justify-content: center;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景装饰 */
+        .share-container::before,
+        .share-container::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .share-container::before {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .share-container::after {
+            width: 300px;
+            height: 300px;
+            bottom: -80px;
+            left: -80px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
         }
         
         .share-box {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            max-width: 520px;
             width: 100%;
-            padding: 40px;
+            padding: 48px 40px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .share-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 36px;
         }
         
         .share-header .logo {
-            font-size: 48px;
-            color: #667eea;
-            margin-bottom: 10px;
+            font-size: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
         .share-header h2 {
-            color: #333;
-            margin: 10px 0;
+            color: #1f2937;
+            margin: 12px 0 8px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .share-header p {
+            color: #6b7280;
+            font-size: 14px;
         }
         
         .file-info {
-            background: #f7f9fc;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
         }
         
         .file-info-item {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .file-info-item:last-child {
@@ -59,9 +123,11 @@
         }
         
         .file-info-item i {
-            font-size: 24px;
-            width: 40px;
-            color: #667eea;
+            font-size: 28px;
+            width: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .file-info-item .info-text {
@@ -70,54 +136,77 @@
         
         .file-info-item .info-label {
             font-size: 12px;
-            color: #666;
-            margin-bottom: 3px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .file-info-item .info-value {
             font-size: 16px;
-            font-weight: 500;
-            color: #333;
+            font-weight: 600;
+            color: #1f2937;
         }
         
         .extract-code-input {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         
         .extract-code-input label {
             display: block;
             font-size: 14px;
-            color: #333;
-            margin-bottom: 8px;
+            color: #374151;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .extract-code-input label i {
+            margin-right: 6px;
+            color: #667eea;
         }
         
         .extract-code-input input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e8ed;
-            border-radius: 6px;
-            font-size: 16px;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 18px;
             text-align: center;
-            letter-spacing: 3px;
-            transition: border-color 0.3s;
+            letter-spacing: 4px;
+            transition: all 0.3s;
+            font-weight: 600;
+            background: #fff;
         }
         
         .extract-code-input input:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .extract-code-input input::placeholder {
+            letter-spacing: normal;
+            font-weight: normal;
         }
         
         .download-btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px 24px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .download-btn:hover {
@@ -126,65 +215,107 @@
         }
         
         .download-btn:active {
-            transform: translateY(0);
+            transform: scale(0.98);
         }
         
         .download-btn:disabled {
-            background: #ccc;
+            background: #d1d5db;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
         
         .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
             text-align: center;
+            border: 1px solid #fca5a5;
+            font-weight: 500;
+        }
+
+        .error-message i {
+            margin-right: 8px;
+            font-size: 18px;
         }
         
         .loading {
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 40px 20px;
+            color: #6b7280;
         }
         
         .loading i {
-            font-size: 32px;
-            margin-bottom: 10px;
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            font-size: 15px;
+            font-weight: 500;
         }
         
         .share-footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e1e8ed;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
         }
         
         .share-footer a {
             color: #667eea;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .share-footer a:hover {
-            text-decoration: underline;
+            color: #5568d3;
+            transform: translateX(-2px);
         }
         
         .info-badge {
             display: inline-block;
             padding: 4px 12px;
-            background: #e3f2fd;
-            color: #1976d2;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
             border-radius: 12px;
             font-size: 12px;
-            margin-top: 5px;
+            margin-top: 6px;
+            font-weight: 600;
         }
         
         .expired-badge {
-            background: #ffebee;
-            color: #c62828;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* 响应式 */
+        @media (max-width: 576px) {
+            .share-box {
+                padding: 32px 24px;
+            }
+
+            .share-header .logo {
+                font-size: 52px;
+            }
+
+            .share-header h2 {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
