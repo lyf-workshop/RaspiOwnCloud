@@ -1016,18 +1016,69 @@ body {
 }
 
 /* ==================== 响应式设计 ==================== */
-@media (max-width: 768px) {
+
+/* 平板横屏 (1024px - 1280px) */
+@media (max-width: 1280px) and (min-width: 1025px) {
     :root {
-        --sidebar-width: 0;
+        --sidebar-width: 220px;
+    }
+    
+    .search-box {
+        max-width: 500px;
+    }
+}
+
+/* 平板竖屏 (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+    :root {
+        --sidebar-width: 200px;
+        --header-height: 60px;
+    }
+    
+    .header-left {
+        width: 200px;
+    }
+    
+    .logo {
+        font-size: 20px;
+    }
+    
+    .search-box {
+        max-width: 400px;
+    }
+    
+    .file-list {
+        padding: 12px 16px;
+    }
+    
+    .file-item {
+        padding: 14px;
+    }
+    
+    .modal-content {
+        width: 85%;
+    }
+}
+
+/* 大手机和小平板 (576px - 768px) */
+@media (max-width: 768px) and (min-width: 577px) {
+    :root {
+        --sidebar-width: 240px;
         --header-height: 56px;
+    }
+    
+    .header {
+        padding: 0 16px;
     }
     
     .sidebar {
         position: fixed;
         left: -240px;
+        top: var(--header-height);
+        height: calc(100vh - var(--header-height));
         z-index: 999;
         transition: left var(--transition-normal);
-        width: 240px;
+        box-shadow: none;
     }
     
     .sidebar.active {
@@ -1035,13 +1086,60 @@ body {
         box-shadow: var(--shadow-2xl);
     }
     
+    /* 添加遮罩层 */
+    .sidebar.active::before {
+        content: '';
+        position: fixed;
+        top: var(--header-height);
+        left: 240px;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+    }
+    
     .header-left {
         width: auto;
     }
     
-    .file-list-header,
+    .logo {
+        font-size: 18px;
+    }
+    
+    .search-box {
+        max-width: 300px;
+    }
+    
+    .search-box input {
+        padding: 10px 14px 10px 40px;
+        font-size: 14px;
+    }
+    
+    .toolbar {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .toolbar-left,
+    .toolbar-right {
+        gap: 8px;
+    }
+    
+    .file-list {
+        padding: 12px 16px;
+    }
+    
+    .file-list-header {
+        grid-template-columns: 1fr 80px;
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+    
     .file-item {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr 80px;
+        padding: 12px;
+        margin-bottom: 6px;
     }
     
     .file-col-size,
@@ -1049,6 +1147,468 @@ body {
         display: none;
     }
     
+    .file-name {
+        gap: 10px;
+        font-size: 14px;
+    }
+    
+    .file-icon {
+        font-size: 20px;
+    }
+    
+    .file-actions {
+        opacity: 1;
+        gap: 6px;
+    }
+    
+    .action-btn {
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+    
+    .btn {
+        padding: 9px 16px;
+        font-size: 14px;
+    }
+    
+    .modal-content {
+        width: 90%;
+        max-width: 500px;
+    }
+}
+
+/* 手机 (320px - 576px) */
+@media (max-width: 576px) {
+    :root {
+        --sidebar-width: 280px;
+        --header-height: 56px;
+    }
+    
+    /* 登录页面优化 */
+    .login-page::before,
+    .login-page::after {
+        display: none; /* 移动端隐藏装饰元素 */
+    }
+    
+    .login-box {
+        padding: 32px 24px;
+    }
+    
+    .logo-icon-large {
+        font-size: 56px;
+    }
+    
+    .login-header h1 {
+        font-size: 26px;
+    }
+    
+    .login-form input {
+        padding: 12px 14px;
+        font-size: 16px; /* 防止 iOS 自动缩放 */
+    }
+    
+    /* 头部导航优化 */
+    .header {
+        padding: 0 12px;
+    }
+    
+    .header-left {
+        width: auto;
+        gap: 8px;
+    }
+    
+    .logo-icon {
+        font-size: 28px;
+    }
+    
+    .logo {
+        font-size: 16px;
+    }
+    
+    /* 添加菜单按钮 */
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background: var(--bg-secondary);
+        border: none;
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        color: var(--text-primary);
+        font-size: 18px;
+        margin-right: 8px;
+    }
+    
+    .header-center {
+        padding: 0 12px;
+    }
+    
+    .search-box {
+        max-width: 100%;
+    }
+    
+    .search-box input {
+        padding: 10px 12px 10px 38px;
+        font-size: 15px;
+        border-radius: 12px;
+    }
+    
+    .search-box i {
+        left: 12px;
+        font-size: 15px;
+    }
+    
+    .user-name {
+        display: none; /* 手机上隐藏用户名 */
+    }
+    
+    .dropdown-btn {
+        padding: 8px;
+        font-size: 18px;
+    }
+    
+    /* 侧边栏优化 */
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: var(--header-height);
+        width: 280px;
+        height: calc(100vh - var(--header-height));
+        z-index: 999;
+        transition: left var(--transition-normal);
+        box-shadow: none;
+    }
+    
+    .sidebar.active {
+        left: 0;
+        box-shadow: var(--shadow-2xl);
+    }
+    
+    .sidebar-nav {
+        padding: 12px 8px;
+    }
+    
+    .nav-item {
+        padding: 14px 16px;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+    
+    .nav-item i {
+        font-size: 20px;
+        margin-right: 14px;
+    }
+    
+    .storage-info {
+        padding: 16px 12px;
+        margin: 8px;
+    }
+    
+    /* 内容区优化 */
+    .content {
+        width: 100%;
+    }
+    
+    .toolbar {
+        padding: 10px 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .toolbar-left {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+    
+    .toolbar-right {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .breadcrumb {
+        padding: 12px;
+        font-size: 13px;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+    
+    .btn-icon {
+        padding: 10px;
+    }
+    
+    /* 文件列表优化 */
+    .file-list {
+        padding: 8px 12px;
+    }
+    
+    .file-list-header {
+        display: none; /* 移动端隐藏表头 */
+    }
+    
+    .file-item {
+        grid-template-columns: 1fr;
+        padding: 14px 12px;
+        margin-bottom: 8px;
+        gap: 8px;
+    }
+    
+    .file-name {
+        gap: 12px;
+        font-size: 15px;
+        font-weight: 500;
+    }
+    
+    .file-icon {
+        font-size: 24px;
+    }
+    
+    .file-col-size,
+    .file-col-date {
+        display: none;
+    }
+    
+    .file-actions {
+        opacity: 1;
+        justify-content: flex-start;
+        gap: 4px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .action-btn {
+        flex: 1;
+        padding: 8px 12px;
+        background: var(--bg-secondary);
+        border-radius: var(--border-radius-sm);
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+    
+    .action-btn:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    /* 对话框优化 */
+    .modal-content {
+        width: 95%;
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 12px;
+    }
+    
+    .modal-content.small {
+        max-width: 100%;
+    }
+    
+    .modal-header {
+        padding: 16px;
+    }
+    
+    .modal-header h3 {
+        font-size: 18px;
+    }
+    
+    .modal-close {
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+    }
+    
+    .modal-body {
+        padding: 16px;
+    }
+    
+    .modal-footer {
+        padding: 16px;
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+    
+    /* 表单优化 */
+    .input-text {
+        padding: 12px 14px;
+        font-size: 16px; /* 防止 iOS 自动缩放 */
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .form-group label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    /* 上传区域优化 */
+    .upload-area {
+        padding: 32px 16px;
+    }
+    
+    .upload-area i {
+        font-size: 48px;
+    }
+    
+    .upload-area p {
+        font-size: 14px;
+    }
+    
+    .upload-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .upload-progress {
+        margin: 0;
+    }
+    
+    /* 分享结果优化 */
+    .share-result {
+        padding: 16px;
+    }
+    
+    .copy-box {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .copy-box .btn {
+        width: 100%;
+    }
+    
+    /* 空状态和加载状态 */
+    .loading,
+    .empty-state {
+        padding: 60px 20px;
+    }
+    
+    .loading i,
+    .empty-state i {
+        font-size: 56px;
+    }
+    
+    /* 触摸优化 */
+    .file-item {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* 滚动条在移动端隐藏 */
+    ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+}
+
+/* 超小手机 (< 360px) */
+@media (max-width: 359px) {
+    .header-center {
+        display: none; /* 超小屏幕隐藏搜索框 */
+    }
+    
+    .logo {
+        font-size: 14px;
+    }
+    
+    .file-name {
+        font-size: 14px;
+    }
+    
+    .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* 横屏模式优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .login-box {
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 24px;
+    }
+    
+    .logo-icon-large {
+        font-size: 40px;
+        margin-bottom: 8px;
+    }
+    
+    .login-header h1 {
+        font-size: 22px;
+        margin-bottom: 6px;
+    }
+    
+    .login-form .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .modal-content {
+        max-height: 95vh;
+    }
+}
+
+/* iPad Pro 和大平板优化 */
+@media (min-width: 1024px) and (max-width: 1366px) {
+    .file-list {
+        padding: 16px 20px;
+    }
+    
+    .modal-content {
+        max-width: 700px;
+    }
+}
+
+/* 触摸设备通用优化 */
+@media (hover: none) and (pointer: coarse) {
+    /* 增大可点击区域 */
+    .btn {
+        min-height: 44px;
+    }
+    
+    .action-btn {
+        min-height: 36px;
+        min-width: 36px;
+    }
+    
+    .nav-item {
+        min-height: 44px;
+    }
+    
+    /* 移除悬停效果，使用点击效果 */
+    .file-item:hover {
+        transform: none;
+    }
+    
+    .file-item:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
+    
+    .btn:hover {
+        transform: none;
+    }
+    
+    .btn:active {
+        transform: scale(0.95);
+    }
+    
+    /* 移除操作按钮的淡入效果 */
     .file-actions {
         opacity: 1;
     }
