@@ -94,16 +94,19 @@
                     <button class="btn btn-secondary" onclick="showCreateFolderDialog()">
                         <i class="fas fa-folder-plus"></i> 新建文件夹
                     </button>
+                    <button class="btn btn-secondary" id="select-all-btn">
+                        <i class="fas fa-check-square"></i> 全选
+                    </button>
                 </div>
                 
                 <div class="toolbar-right">
                     <button class="btn-icon" onclick="refreshFiles()" title="刷新">
                         <i class="fas fa-sync-alt"></i>
                     </button>
-                    <button class="btn-icon" onclick="toggleView('grid')" title="网格视图">
+                    <button class="btn-icon" data-view="grid" title="网格视图">
                         <i class="fas fa-th"></i>
                     </button>
-                    <button class="btn-icon active" onclick="toggleView('list')" title="列表视图">
+                    <button class="btn-icon active" data-view="list" title="列表视图">
                         <i class="fas fa-list"></i>
                     </button>
                 </div>
@@ -117,9 +120,10 @@
             </div>
 
             <!-- 文件列表 -->
-            <div class="file-list" id="file-list">
+            <div class="file-list list-view" id="file-list">
                 <!-- 列表头 -->
                 <div class="file-list-header">
+                    <div class="file-col-checkbox"></div>
                     <div class="file-col-name">文件名</div>
                     <div class="file-col-size">大小</div>
                     <div class="file-col-date">修改日期</div>
@@ -201,6 +205,16 @@
                         <button class="btn btn-secondary" onclick="copyShareLink()">复制</button>
                     </div>
                     <p id="share-code-info" style="margin-top: 10px;"></p>
+                    
+                    <!-- 二维码 -->
+                    <div class="share-qrcode-container" id="share-qrcode-container">
+                        <h4><i class="fas fa-qrcode"></i> 扫码访问</h4>
+                        <div id="share-qrcode"></div>
+                        <p class="qrcode-tip">使用手机扫描二维码即可访问</p>
+                        <button class="btn btn-secondary" onclick="qrcodeShare.download()" style="margin-top: 12px;">
+                            <i class="fas fa-download"></i> 下载二维码
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -223,9 +237,37 @@
         </div>
     </div>
 
+    <!-- 批量操作工具栏 -->
+    <div class="batch-toolbar" id="batch-toolbar">
+        <div class="batch-toolbar-info">
+            已选择 <span id="selected-count">0</span> 个文件
+        </div>
+        <div class="batch-toolbar-actions">
+            <button class="btn btn-primary" id="batch-download-btn">
+                <i class="fas fa-download"></i> 下载
+            </button>
+            <button class="btn btn-secondary" id="batch-move-btn">
+                <i class="fas fa-folder-open"></i> 移动
+            </button>
+            <button class="btn btn-danger" id="batch-delete-btn">
+                <i class="fas fa-trash"></i> 删除
+            </button>
+            <button class="btn btn-secondary" id="cancel-selection-btn">
+                <i class="fas fa-times"></i> 取消
+            </button>
+        </div>
+    </div>
+
     <!-- 加载脚本 -->
+    <!-- 二维码库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- 项目脚本 -->
     <script src="js/config.js"></script>
     <script src="js/mobile.js"></script>
+    <script src="js/batch-operations.js"></script>
+    <script src="js/drag-upload.js"></script>
+    <script src="js/grid-view.js"></script>
+    <script src="js/qrcode-share.js"></script>
     <script src="js/main.js"></script>
     <script src="js/upload.js"></script>
     <script src="js/preview.js"></script>

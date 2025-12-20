@@ -401,6 +401,67 @@ async def move_file(
     }
 
 
+from pydantic import BaseModel
+
+class BatchDownloadRequest(BaseModel):
+    file_ids: List[int]
+
+@app.post("/api/files/batch-download")
+async def batch_download(
+    request: BatchDownloadRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    批量下载文件（打包为ZIP）
+    
+    - **file_ids**: 文件ID列表
+    """
+    import zipfile
+    import io
+    from datetime import datetime
+    
+    file_service = FileService(db)
+    file_ids = request.file_ids
+    
+    # 创建内存中的ZIP文件
+    zip_buffer = io.BytesIO()
+    
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for file_id in file_ids:
+            try:
+                file = file_service.get_file(current_user, file_id)
+                
+                if file.is_folder:
+                    continue  # 跳过文件夹
+                
+                file_path = Path(file.file_path)
+                
+                if file_path.exists():
+                    # 添加文件到ZIP
+                    zip_file.write(
+                        file_path,
+                        arcname=file.original_filename or file.filename
+                    )
+            except Exception as e:
+                print(f"添加文件 {file_id} 到ZIP失败: {e}")
+                continue
+    
+    # 重置文件指针
+    zip_buffer.seek(0)
+    
+    # 返回ZIP文件
+    filename = f"批量下载_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
+    
+    return StreamingResponse(
+        zip_buffer,
+        media_type="application/zip",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"'
+        }
+    )
+
+
 # ==================== 文件分享 ====================
 
 @app.post("/api/shares/create", response_model=ShareResponse)

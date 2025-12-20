@@ -117,8 +117,30 @@ function renderFiles(files) {
         return;
     }
     
-    fileItems.innerHTML = files.map(file => `
+    // 检查当前视图模式
+    const currentView = window.gridView ? window.gridView.getCurrent() : 'list';
+    
+    if (currentView === 'grid') {
+        // 网格视图
+        fileItems.innerHTML = files.map(file => window.gridView.renderGridItem(file)).join('');
+    } else {
+        // 列表视图
+        fileItems.innerHTML = files.map(file => window.gridView ? window.gridView.renderListItem(file) : renderListItemFallback(file)).join('');
+    }
+}
+
+/**
+ * 列表项渲染（兼容旧版本）
+ */
+function renderListItemFallback(file) {
+    return `
         <div class="file-item" onclick="handleFileClick(${file.id})">
+            <div class="file-col-checkbox">
+                <input type="checkbox" 
+                       class="file-checkbox" 
+                       data-file-id="${file.id}"
+                       onclick="event.stopPropagation(); batchOperations.toggleSelection(${file.id}, this)">
+            </div>
             <div class="file-name">
                 <i class="fas ${utils.getFileIcon(file)} file-icon ${file.category}"></i>
                 <span>${file.original_filename || file.filename}</span>
@@ -142,7 +164,7 @@ function renderFiles(files) {
                 </button>
             </div>
         </div>
-    `).join('');
+    `;
 }
 
 /**
@@ -332,6 +354,16 @@ function showShareDialog(fileId) {
     state.selectedFile = fileId;
     document.getElementById('share-result').style.display = 'none';
     document.getElementById('create-share-btn').style.display = 'inline-flex';
+    
+    // 清除之前的二维码
+    const qrcodeContainer = document.getElementById('share-qrcode-container');
+    if (qrcodeContainer) {
+        qrcodeContainer.classList.remove('active');
+    }
+    if (window.qrcodeShare) {
+        window.qrcodeShare.clear();
+    }
+    
     document.getElementById('share-modal').classList.add('active');
 }
 
@@ -361,6 +393,15 @@ async function createShare() {
             data.extract_code ? `提取码: ${data.extract_code}` : '无需提取码';
         document.getElementById('share-result').style.display = 'block';
         document.getElementById('create-share-btn').style.display = 'none';
+        
+        // 生成二维码
+        if (window.qrcodeShare) {
+            const qrcodeContainer = document.getElementById('share-qrcode-container');
+            if (qrcodeContainer) {
+                qrcodeContainer.classList.add('active');
+            }
+            window.qrcodeShare.show(data.share_url);
+        }
     } catch (error) {
         utils.showNotification('创建分享失败: ' + error.message);
     }
