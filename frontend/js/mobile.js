@@ -73,8 +73,16 @@ function toggleSidebar() {
     
     const isActive = sidebar.classList.toggle('active');
     
-    // 更新按钮图标
+    // 更新按钮状态和图标
     if (menuButton) {
+        // 添加active类用于动画
+        if (isActive) {
+            menuButton.classList.add('active');
+        } else {
+            menuButton.classList.remove('active');
+        }
+        
+        // 更新图标
         const icon = menuButton.querySelector('i');
         if (icon) {
             icon.className = isActive ? 'fas fa-times' : 'fas fa-bars';
