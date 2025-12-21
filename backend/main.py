@@ -155,13 +155,35 @@ async def get_current_user_info(current_user: User = Depends(get_current_user)):
 
 @app.post("/api/auth/change-password")
 async def change_password(
-    old_password: str = Form(...),
-    new_password: str = Form(...),
+    old_password: str = Form(None),
+    new_password: str = Form(None),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    request: Request = None
 ):
-    """修改密码"""
+    """修改密码 - 支持Form和JSON两种格式"""
+    # 尝试从JSON获取
+    if old_password is None or new_password is None:
+        try:
+            body = await request.json()
+            old_password = body.get('old_password')
+            new_password = body.get('new_password')
+        except:
+            pass
+    
+    if not old_password or not new_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="缺少必要参数"
+        )
+    
     success = update_user_password(db, current_user, old_password, new_password)
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="当前密码不正确"
+        )
     
     return {"success": success, "message": "密码修改成功"}
 

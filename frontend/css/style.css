@@ -2133,3 +2133,453 @@ body {
         font-size: 60px;
     }
 }
+
+/* ==================== 用户设置与个人中心 ==================== */
+.modal-large {
+    max-width: 900px;
+    width: 90%;
+    max-height: 85vh;
+    overflow: hidden;
+}
+
+.settings-container {
+    display: flex;
+    height: 600px;
+    max-height: calc(85vh - 100px);
+}
+
+.settings-sidebar {
+    width: 200px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+.settings-nav {
+    padding: 16px 0;
+}
+
+.settings-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.settings-nav-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary-color);
+}
+
+.settings-nav-item.active {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: var(--primary-color);
+    border-right: 3px solid var(--primary-color);
+    font-weight: 600;
+}
+
+.settings-nav-item i {
+    font-size: 16px;
+    width: 20px;
+}
+
+.settings-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.settings-panel {
+    display: none;
+}
+
+.settings-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.settings-panel h3 {
+    font-size: 24px;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+}
+
+.settings-panel h4 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.settings-section {
+    margin-bottom: 28px;
+}
+
+.settings-label {
+    display: block;
+    margin-bottom: 8px;
+    margin-top: 16px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* 用户头像区域 */
+.user-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+}
+
+.user-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 48px;
+}
+
+/* 存储概览 */
+.storage-overview {
+    display: flex;
+    gap: 40px;
+    padding: 24px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+}
+
+.storage-chart {
+    flex-shrink: 0;
+}
+
+.storage-stats {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.storage-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: white;
+    border-radius: var(--border-radius-sm);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.stat-value {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* 文件类型列表 */
+.file-type-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.file-type-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-normal);
+}
+
+.file-type-item:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateX(4px);
+}
+
+.file-type-item i {
+    font-size: 24px;
+    color: var(--primary-color);
+    width: 32px;
+    text-align: center;
+}
+
+.file-type-info {
+    flex: 1;
+}
+
+.file-type-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.file-type-detail {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.file-type-percentage {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* 设备列表 */
+.device-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.device-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+}
+
+.device-item.current {
+    border: 2px solid var(--primary-color);
+}
+
+.device-item i {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.device-info {
+    flex: 1;
+}
+
+.device-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.device-time {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.badge {
+    padding: 4px 12px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* 主题选项 */
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.theme-option {
+    cursor: pointer;
+}
+
+.theme-option input {
+    display: none;
+}
+
+.theme-preview {
+    padding: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    text-align: center;
+    transition: all var(--transition-normal);
+}
+
+.theme-preview:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-option input:checked + .theme-preview {
+    border-color: var(--primary-color);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.theme-option input:disabled + .theme-preview {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.theme-preview i {
+    font-size: 32px;
+    margin-bottom: 12px;
+    color: var(--primary-color);
+}
+
+.theme-preview span {
+    display: block;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+/* 关于页面 */
+.about-section {
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-md);
+}
+
+.about-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 56px;
+}
+
+.about-section h2 {
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.about-section .version {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.about-section .description {
+    color: var(--text-secondary);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+}
+
+.info-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.info-value {
+    font-size: 15px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+.feature-list i {
+    color: var(--success-color);
+}
+
+.text-muted {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.loading-small {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .modal-large {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .settings-container {
+        flex-direction: column;
+        height: auto;
+        max-height: calc(85vh - 80px);
+    }
+    
+    .settings-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .settings-nav {
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .settings-nav-item {
+        white-space: nowrap;
+        padding: 8px 16px;
+        border-radius: var(--border-radius-sm);
+    }
+    
+    .settings-nav-item.active {
+        border-right: none;
+        border-bottom: 3px solid var(--primary-color);
+    }
+    
+    .storage-overview {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .theme-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-list {
+        grid-template-columns: 1fr;
+    }
+}

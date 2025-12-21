@@ -114,3 +114,5 @@ window.qrcodeShare = {
     clear: clearQRCode
 };
 
+
+
