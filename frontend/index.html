@@ -272,6 +272,82 @@
     <script src="js/main.js"></script>
     <script src="js/upload.js"></script>
     <script src="js/preview.js"></script>
+
+    <!-- 页脚 -->
+    <footer style="
+        margin-top: 80px;
+        padding: 30px 20px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    ">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <!-- 备案信息 -->
+            <div style="
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            ">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                    <svg style="width: 24px; height: 24px; fill: white; opacity: 0.9;" viewBox="0 0 24 24">
+                        <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M16.59,7.58L10,14.17L7.41,11.59L6,13L10,17L18,9L16.59,7.58Z"/>
+                    </svg>
+                    <a href="https://beian.miit.gov.cn/" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       style="
+                           color: white;
+                           text-decoration: none;
+                           font-size: 14px;
+                           font-weight: 500;
+                           letter-spacing: 0.5px;
+                           transition: all 0.3s ease;
+                           padding: 8px 16px;
+                           border-radius: 6px;
+                           background: rgba(255, 255, 255, 0.1);
+                       "
+                       onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'; this.style.transform='translateY(-2px)';"
+                       onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.transform='translateY(0)';">
+                        🏛️ 晋ICP备2025071044号
+                    </a>
+                </div>
+            </div>
+
+            <!-- 项目信息 -->
+            <div style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-bottom: 15px;
+                font-size: 13px;
+                opacity: 0.9;
+            ">
+                <span>🍓 RaspberryCloud</span>
+                <span style="opacity: 0.5;">|</span>
+                <span>📦 私有云存储</span>
+                <span style="opacity: 0.5;">|</span>
+                <span>🔒 安全可靠</span>
+            </div>
+
+            <!-- 版权信息 -->
+            <div style="
+                font-size: 12px;
+                opacity: 0.8;
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid rgba(255, 255, 255, 0.2);
+            ">
+                <p style="margin: 5px 0;">© 2025 RaspberryCloud. All rights reserved.</p>
+                <p style="margin: 5px 0; opacity: 0.7;">Powered by 🍓 Raspberry Pi</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
 
