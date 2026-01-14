@@ -1,0 +1,450 @@
+/* ==================== Apple风格现代化设计 ==================== */
+
+/* 全局重置和优化 */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+:root {
+    /* Apple风格配色 */
+    --apple-blue: #007AFF;
+    --apple-gray: #8E8E93;
+    --apple-background: #F2F2F7;
+    --apple-surface: #FFFFFF;
+    --apple-border: rgba(0, 0, 0, 0.1);
+    --apple-shadow: rgba(0, 0, 0, 0.1);
+    
+    /* 响应式间距 */
+    --spacing-xs: clamp(4px, 1vw, 8px);
+    --spacing-sm: clamp(8px, 2vw, 12px);
+    --spacing-md: clamp(12px, 3vw, 20px);
+    --spacing-lg: clamp(20px, 4vw, 32px);
+    --spacing-xl: clamp(32px, 6vw, 48px);
+}
+
+/* 平滑滚动 */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    font-size: clamp(14px, 1.5vw, 16px);
+    background: var(--apple-background);
+    overflow-x: hidden;
+}
+
+/* ==================== 响应式头部 ==================== */
+.header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 0.5px solid var(--apple-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 手机端头部优化 */
+@media (max-width: 768px) {
+    .header {
+        height: 56px;
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .header-center {
+        flex: 1;
+        max-width: 100%;
+    }
+    
+    .search-box {
+        max-width: 100%;
+        font-size: 14px;
+    }
+    
+    .logo {
+        font-size: 16px !important;
+    }
+    
+    .user-name {
+        display: none !important;
+    }
+}
+
+/* ==================== 响应式侧边栏 ==================== */
+.sidebar {
+    background: var(--apple-surface);
+    border-right: 0.5px solid var(--apple-border);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 手机端侧边栏 */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 56px;
+        bottom: 0;
+        width: 280px;
+        transform: translateX(-100%);
+        z-index: 999;
+        box-shadow: 2px 0 12px var(--apple-shadow);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .main-container {
+        flex-direction: column;
+    }
+    
+    .content {
+        width: 100%;
+        padding: var(--spacing-sm);
+    }
+}
+
+/* ==================== 响应式工具栏 ==================== */
+.toolbar {
+    background: var(--apple-surface);
+    border-radius: 12px;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    box-shadow: 0 1px 3px var(--apple-shadow);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    align-items: center;
+    justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+    .toolbar {
+        flex-direction: column;
+        padding: var(--spacing-sm);
+    }
+    
+    .toolbar-left,
+    .toolbar-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn {
+        font-size: 13px;
+        padding: 8px 14px;
+        flex: 1;
+        min-width: auto;
+    }
+    
+    .btn i {
+        margin-right: 4px;
+    }
+}
+
+/* ==================== 响应式文件列表 ==================== */
+.file-list {
+    background: var(--apple-surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px var(--apple-shadow);
+}
+
+/* 手机端文件列表 */
+@media (max-width: 768px) {
+    .file-list-header {
+        display: none !important;
+    }
+    
+    .file-item {
+        display: flex !important;
+        flex-direction: column;
+        padding: var(--spacing-md) !important;
+        border-bottom: 0.5px solid var(--apple-border);
+        gap: var(--spacing-xs);
+    }
+    
+    .file-col-name {
+        font-size: 15px;
+        font-weight: 500;
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    .file-col-size,
+    .file-col-date {
+        font-size: 12px;
+        color: var(--apple-gray);
+    }
+    
+    .file-col-actions {
+        margin-top: var(--spacing-sm);
+        display: flex;
+        gap: var(--spacing-xs);
+    }
+    
+    .file-col-actions .btn-icon {
+        padding: 8px;
+        background: var(--apple-background);
+        border-radius: 8px;
+    }
+}
+
+/* ==================== 网格视图优化 ==================== */
+.file-list.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .file-list.grid-view {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+}
+
+/* ==================== 模态框响应式 ==================== */
+.modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px var(--apple-shadow);
+    animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95vw !important;
+        max-width: none !important;
+        margin: var(--spacing-sm);
+        max-height: 85vh;
+    }
+    
+    .modal-content.large {
+        width: 98vw !important;
+    }
+    
+    .modal-header h3 {
+        font-size: 18px;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+/* ==================== Apple风格按钮 ==================== */
+.btn {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn-primary {
+    background: var(--apple-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+.btn-primary:hover {
+    background: #0051D5;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+}
+
+.btn-secondary {
+    background: var(--apple-background);
+    color: var(--apple-blue);
+}
+
+.btn-secondary:hover {
+    background: #E5E5EA;
+}
+
+/* ==================== Apple风格输入框 ==================== */
+.input-text {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 0.5px solid var(--apple-border);
+    background: var(--apple-surface);
+    transition: all 0.2s ease;
+}
+
+.input-text:focus {
+    outline: none;
+    border-color: var(--apple-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+/* ==================== 现代化页脚 ==================== */
+footer {
+    margin-top: var(--spacing-xl) !important;
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg) !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    text-align: center !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1) !important;
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path fill="rgba(255,255,255,0.05)" d="M0,0 Q300,40 600,20 T1200,0 L1200,120 L0,120 Z"></path></svg>') no-repeat bottom;
+    background-size: cover;
+    pointer-events: none;
+}
+
+/* 响应式页脚 */
+@media (max-width: 768px) {
+    footer {
+        padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md) !important;
+    }
+    
+    footer > div {
+        padding: 0 var(--spacing-xs);
+    }
+    
+    footer .storage-info,
+    footer .project-info {
+        font-size: 12px !important;
+        gap: var(--spacing-sm) !important;
+    }
+    
+    footer .beian-link {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+    }
+    
+    footer .copyright-text {
+        font-size: 11px !important;
+    }
+}
+
+/* ==================== 加载动画 ==================== */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    color: var(--apple-gray);
+}
+
+.loading i {
+    font-size: 32px;
+    margin-bottom: var(--spacing-md);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== 触摸优化 ==================== */
+@media (hover: none) and (pointer: coarse) {
+    .btn,
+    .btn-icon,
+    .nav-item,
+    .file-item {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .file-col-actions .btn-icon {
+        padding: 10px;
+    }
+}
+
+/* ==================== 深色模式准备 ==================== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --apple-background: #000000;
+        --apple-surface: #1C1C1E;
+        --apple-border: rgba(255, 255, 255, 0.1);
+    }
+    
+    body {
+        color: #FFFFFF;
+    }
+    
+    .header {
+        background: rgba(28, 28, 30, 0.8);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* ==================== 平滑过渡 ==================== */
+* {
+    transition: background-color 0.2s ease, 
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+/* ==================== 无障碍优化 ==================== */
+:focus-visible {
+    outline: 2px solid var(--apple-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ==================== 性能优化 ==================== */
+.header,
+.sidebar,
+.modal {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* ==================== 手势支持 ==================== */
+@media (max-width: 768px) {
+    .file-item {
+        touch-action: pan-y;
+    }
+    
+    .modal-content {
+        touch-action: pan-y;
+    }
+}
+

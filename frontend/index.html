@@ -9,6 +9,7 @@
     <meta name="theme-color" content="#667eea">
     <title>RaspberryCloud - 私有云存储</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modern.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -263,6 +264,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- 项目脚本 -->
     <script src="js/config.js"></script>
+    <script src="js/mobile-menu.js"></script>
     <script src="js/mobile.js"></script>
     <script src="js/batch-operations.js"></script>
     <script src="js/drag-upload.js"></script>
@@ -273,78 +275,99 @@
     <script src="js/upload.js"></script>
     <script src="js/preview.js"></script>
 
-    <!-- 页脚 -->
-    <footer style="
-        margin-top: 80px;
-        padding: 30px 20px 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        text-align: center;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-    ">
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <!-- 备案信息 -->
+    <!-- Apple风格页脚 -->
+    <footer>
+        <div style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 1;">
+            <!-- 备案信息卡片 -->
             <div style="
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                border-radius: 12px;
-                padding: 20px;
-                margin-bottom: 20px;
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 16px;
+                padding: clamp(16px, 4vw, 24px);
+                margin-bottom: clamp(16px, 3vw, 24px);
                 border: 1px solid rgba(255, 255, 255, 0.2);
-            ">
-                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                    <svg style="width: 24px; height: 24px; fill: white; opacity: 0.9;" viewBox="0 0 24 24">
-                        <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M16.59,7.58L10,14.17L7.41,11.59L6,13L10,17L18,9L16.59,7.58Z"/>
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 48px rgba(0, 0, 0, 0.15)';" 
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.1)';">
+                <div style="display: flex; align-items: center; justify-content: center; gap: clamp(10px, 2vw, 16px); flex-wrap: wrap;">
+                    <!-- 认证图标 -->
+                    <svg style="width: clamp(20px, 4vw, 28px); height: clamp(20px, 4vw, 28px); fill: white; opacity: 0.95; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));" viewBox="0 0 24 24">
+                        <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M17.13,17C15.92,18.85 14.11,20.24 12,20.92C9.89,20.24 8.08,18.85 6.87,17C6.53,16.5 6.24,16 6,15.47C6,13.82 8.71,12.47 12,12.47C15.29,12.47 18,13.79 18,15.47C17.76,16 17.47,16.5 17.13,17Z"/>
                     </svg>
+                    <!-- 备案链接 -->
                     <a href="https://beian.miit.gov.cn/" 
                        target="_blank" 
                        rel="noopener noreferrer" 
+                       class="beian-link"
                        style="
                            color: white;
                            text-decoration: none;
-                           font-size: 14px;
-                           font-weight: 500;
-                           letter-spacing: 0.5px;
-                           transition: all 0.3s ease;
-                           padding: 8px 16px;
-                           border-radius: 6px;
+                           font-size: clamp(13px, 2.5vw, 15px);
+                           font-weight: 600;
+                           letter-spacing: 0.3px;
+                           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                           padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px);
+                           border-radius: 10px;
                            background: rgba(255, 255, 255, 0.1);
+                           display: inline-flex;
+                           align-items: center;
+                           gap: 8px;
                        "
-                       onmouseover="this.style.background='rgba(255, 255, 255, 0.2)'; this.style.transform='translateY(-2px)';"
-                       onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.transform='translateY(0)';">
-                        🏛️ 晋ICP备2025071044号
+                       onmouseover="this.style.background='rgba(255, 255, 255, 0.25)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(255, 255, 255, 0.2)';"
+                       onmouseout="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24">
+                            <path d="M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"/>
+                        </svg>
+                        晋ICP备2025071044号
                     </a>
                 </div>
             </div>
 
-            <!-- 项目信息 -->
-            <div style="
+            <!-- 项目特性 -->
+            <div class="project-info" style="
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 20px;
+                gap: clamp(12px, 3vw, 24px);
                 flex-wrap: wrap;
-                margin-bottom: 15px;
-                font-size: 13px;
-                opacity: 0.9;
+                margin-bottom: clamp(16px, 3vw, 20px);
+                font-size: clamp(12px, 2vw, 14px);
+                opacity: 0.95;
+                font-weight: 500;
             ">
-                <span>🍓 RaspberryCloud</span>
-                <span style="opacity: 0.5;">|</span>
-                <span>📦 私有云存储</span>
-                <span style="opacity: 0.5;">|</span>
-                <span>🔒 安全可靠</span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                    <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z"/></svg>
+                    RaspberryCloud
+                </span>
+                <span style="opacity: 0.4;">•</span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                    <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M2,10.96C2.5,10.68 3.04,10.47 3.6,10.35C4.1,9.26 4.71,8.25 5.42,7.34C4.3,6.86 3.25,6.29 2.27,5.64C2,6.74 1.86,7.9 1.86,9.06C1.86,9.66 1.9,10.25 2,10.82C2,10.87 2,10.91 2,10.96M21.7,12.18C21.9,11.5 22,10.76 22,10C22,9.24 21.9,8.5 21.7,7.82C20.74,8.46 19.7,9 18.64,9.47C19.34,10.36 19.95,11.35 20.45,12.42C21,12.29 21.54,12.1 22.07,11.82C21.9,11.94 21.8,12.06 21.7,12.18M8.54,12C9.18,10.83 10,9.81 11,9C10,8.19 9.18,7.17 8.54,6C7.85,6 7.18,6.09 6.5,6.24C7.17,7.31 7.71,8.5 8.09,9.77C8.43,10.84 8.5,11.93 8.54,12M14.18,3.23C14,3.14 13.75,3.06 13.5,3C13.28,3 13.07,3 12.86,3C12.65,3 12.44,3 12.23,3.06C12.03,3.11 11.85,3.17 11.68,3.23C12.33,4.23 12.84,5.34 13.18,6.5C13.64,6.41 14.11,6.35 14.59,6.35C15.07,6.35 15.54,6.41 16,6.5C16.34,5.34 16.85,4.23 17.5,3.23C17.33,3.17 17.15,3.11 16.95,3.06C16.74,3 16.53,3 16.32,3C16.11,3 15.9,3 15.68,3C15.43,3.06 15.18,3.14 15,3.23C14.72,3.37 14.45,3.58 14.18,3.23M3.64,14.54C4.66,15 5.71,15.35 6.79,15.58C7.27,16.58 7.86,17.5 8.55,18.34C7.61,17.81 6.75,17.13 6,16.34C5.13,15.41 4.42,14.29 3.91,13.06C3.75,13.53 3.68,14.03 3.64,14.54M14.18,20.77C14.45,20.42 14.72,20.63 15,20.77C15.18,20.86 15.43,20.94 15.68,21C15.9,21 16.11,21 16.32,21C16.53,21 16.74,21 16.95,20.94C17.15,20.89 17.33,20.83 17.5,20.77C16.85,19.77 16.34,18.66 16,17.5C15.54,17.59 15.07,17.65 14.59,17.65C14.11,17.65 13.64,17.59 13.18,17.5C12.84,18.66 12.33,19.77 11.68,20.77C11.85,20.83 12.03,20.89 12.23,20.94C12.44,21 12.65,21 12.86,21C13.07,21 13.28,21 13.5,21C13.75,20.94 14,20.86 14.18,20.77M5.42,16.66C6.13,17.57 6.94,18.39 7.82,19.11C8.28,19.43 8.76,19.72 9.26,19.97C9.84,19.84 10.41,19.66 10.97,19.42C10.18,18.31 9.56,17.07 9.14,15.74C8.72,15.67 8.31,15.58 7.91,15.46C7.23,15.27 6.56,15.03 5.92,14.75C5.67,15.38 5.5,16.02 5.42,16.66M18.58,16.66C18.5,16.02 18.33,15.38 18.08,14.75C17.44,15.03 16.77,15.27 16.09,15.46C15.69,15.58 15.28,15.67 14.86,15.74C14.44,17.07 13.82,18.31 13.03,19.42C13.59,19.66 14.16,19.84 14.74,19.97C15.24,19.72 15.72,19.43 16.18,19.11C17.06,18.39 17.87,17.57 18.58,16.66M16.08,9.25C15.28,9.06 14.46,8.97 13.64,8.97C12.82,8.97 12,9.06 11.2,9.25C10.78,10.5 10.5,11.73 10.5,13C10.5,14.27 10.78,15.5 11.2,16.75C12,16.94 12.82,17.03 13.64,17.03C14.46,17.03 15.28,16.94 16.08,16.75C16.5,15.5 16.78,14.27 16.78,13C16.78,11.73 16.5,10.5 16.08,9.25Z"/></svg>
+                    私有云存储
+                </span>
+                <span style="opacity: 0.4;">•</span>
+                <span style="display: flex; align-items: center; gap: 6px;">
+                    <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"/></svg>
+                    安全可靠
+                </span>
             </div>
 
             <!-- 版权信息 -->
-            <div style="
-                font-size: 12px;
-                opacity: 0.8;
-                margin-top: 15px;
-                padding-top: 15px;
-                border-top: 1px solid rgba(255, 255, 255, 0.2);
+            <div class="copyright-text" style="
+                font-size: clamp(11px, 1.8vw, 13px);
+                opacity: 0.85;
+                margin-top: clamp(12px, 2vw, 16px);
+                padding-top: clamp(12px, 2vw, 16px);
+                border-top: 1px solid rgba(255, 255, 255, 0.15);
+                line-height: 1.6;
             ">
-                <p style="margin: 5px 0;">© 2025 RaspberryCloud. All rights reserved.</p>
-                <p style="margin: 5px 0; opacity: 0.7;">Powered by 🍓 Raspberry Pi</p>
+                <p style="margin: 4px 0; font-weight: 500;">© 2025 RaspberryCloud. All rights reserved.</p>
+                <p style="margin: 4px 0; opacity: 0.7; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <span>Powered by</span>
+                    <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z"/></svg>
+                    <span>Raspberry Pi</span>
+                </p>
             </div>
         </div>
     </footer>
