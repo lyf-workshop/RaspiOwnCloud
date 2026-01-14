@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#6750A4">
+    <title>RaspberryCloud - 私有云存储</title>
+    
+    <!-- Material Design Styles -->
+    <link rel="stylesheet" href="css/material-design.css">
+    <link rel="stylesheet" href="css/material-icons.css">
+    <link rel="stylesheet" href="css/material-main.css">
+</head>
+<body>
+    <!-- Top App Bar -->
+    <header class="md-app-bar">
+        <button class="md-icon-button" id="menu-btn" aria-label="Menu">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        
+        <div class="md-app-bar-title">
+            <span class="material-symbols-outlined app-icon">cloud</span>
+            <h1>RaspberryCloud</h1>
+        </div>
+        
+        <div class="md-search-container">
+            <div class="md-search-bar">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" id="search-input" placeholder="搜索文件...">
+            </div>
+        </div>
+        
+        <div class="md-app-bar-actions">
+            <button class="md-icon-button" id="theme-toggle" aria-label="切换主题">
+                <span class="material-symbols-outlined">dark_mode</span>
+            </button>
+            
+            <button class="md-icon-button" id="user-menu-btn" aria-label="用户菜单">
+                <span class="material-symbols-outlined">account_circle</span>
+            </button>
+            
+            <!-- User Menu -->
+            <div class="md-menu" id="user-menu">
+                <div class="md-menu-header">
+                    <span class="material-symbols-outlined">person</span>
+                    <div class="user-info">
+                        <span class="user-name" id="username">用户</span>
+                        <span class="user-role">管理员</span>
+                    </div>
+                </div>
+                <div class="md-divider"></div>
+                <button class="md-menu-item" onclick="showUserSettings()">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span>设置</span>
+                </button>
+                <button class="md-menu-item" onclick="logout()">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>退出登录</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Drawer -->
+    <nav class="md-drawer" id="drawer">
+        <div class="md-drawer-header">
+            <span class="material-symbols-outlined">cloud</span>
+            <span>RaspberryCloud</span>
+        </div>
+        
+        <div class="md-drawer-content">
+            <button class="md-drawer-item active" data-view="all">
+                <span class="material-symbols-outlined">folder</span>
+                <span>全部文件</span>
+            </button>
+            
+            <button class="md-drawer-item" data-view="image">
+                <span class="material-symbols-outlined">image</span>
+                <span>图片</span>
+            </button>
+            
+            <button class="md-drawer-item" data-view="video">
+                <span class="material-symbols-outlined">video_library</span>
+                <span>视频</span>
+            </button>
+            
+            <button class="md-drawer-item" data-view="audio">
+                <span class="material-symbols-outlined">music_note</span>
+                <span>音乐</span>
+            </button>
+            
+            <button class="md-drawer-item" data-view="document">
+                <span class="material-symbols-outlined">description</span>
+                <span>文档</span>
+            </button>
+            
+            <div class="md-divider"></div>
+            
+            <button class="md-drawer-item" onclick="showMyShares()">
+                <span class="material-symbols-outlined">share</span>
+                <span>我的分享</span>
+            </button>
+            
+            <button class="md-drawer-item" onclick="showRecycleBin()">
+                <span class="material-symbols-outlined">delete</span>
+                <span>回收站</span>
+            </button>
+        </div>
+        
+        <!-- Storage Info -->
+        <div class="md-storage-card">
+            <div class="storage-header">
+                <span class="material-symbols-outlined">storage</span>
+                <span>存储空间</span>
+            </div>
+            <div class="md-progress-linear">
+                <div class="md-progress-linear-bar" id="storage-bar" style="width: 0%"></div>
+            </div>
+            <div class="storage-text" id="storage-text">0 GB / 100 GB</div>
+        </div>
+    </nav>
+
+    <!-- Drawer Scrim (背景遮罩) -->
+    <div class="md-drawer-scrim" id="drawer-scrim"></div>
+
+    <!-- Main Content -->
+    <main class="md-main-content">
+        <!-- Breadcrumb -->
+        <div class="md-breadcrumb" id="breadcrumb">
+            <button class="md-breadcrumb-item" onclick="navigateToFolder(null)">
+                <span class="material-symbols-outlined">home</span>
+                <span>全部文件</span>
+            </button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="md-toolbar">
+            <div class="md-toolbar-left">
+                <button class="md-button-filled md-ripple" onclick="showUploadDialog()">
+                    <span class="material-symbols-outlined">upload</span>
+                    <span>上传</span>
+                </button>
+                
+                <button class="md-button-outlined md-ripple" onclick="showCreateFolderDialog()">
+                    <span class="material-symbols-outlined">create_new_folder</span>
+                    <span>新建文件夹</span>
+                </button>
+            </div>
+            
+            <div class="md-toolbar-right">
+                <button class="md-icon-button" onclick="refreshFiles()" title="刷新">
+                    <span class="material-symbols-outlined">refresh</span>
+                </button>
+                
+                <button class="md-icon-button" id="view-grid-btn" title="网格视图">
+                    <span class="material-symbols-outlined">grid_view</span>
+                </button>
+                
+                <button class="md-icon-button active" id="view-list-btn" title="列表视图">
+                    <span class="material-symbols-outlined">view_list</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- File List -->
+        <div class="md-file-container" id="file-container">
+            <!-- List View Header -->
+            <div class="md-file-list-header" id="list-header">
+                <div class="file-col-checkbox">
+                    <input type="checkbox" id="select-all">
+                </div>
+                <div class="file-col-name">名称</div>
+                <div class="file-col-size">大小</div>
+                <div class="file-col-date">修改日期</div>
+                <div class="file-col-actions">操作</div>
+            </div>
+            
+            <!-- File Items -->
+            <div class="md-file-list" id="file-list">
+                <!-- Loading state -->
+                <div class="md-loading-state">
+                    <div class="md-progress-circular">
+                        <svg viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4"/>
+                        </svg>
+                    </div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAB Upload Button -->
+        <button class="md-fab md-ripple" id="fab-upload" onclick="showUploadDialog()">
+            <span class="material-symbols-outlined">add</span>
+        </button>
+
+        <!-- Batch Action Snackbar -->
+        <div class="md-snackbar" id="batch-snackbar">
+            <span>已选择 <strong id="selected-count">0</strong> 个文件</span>
+            <div class="md-snackbar-actions">
+                <button class="md-button-text" id="batch-download-btn">
+                    <span class="material-symbols-outlined">download</span>
+                    <span>下载</span>
+                </button>
+                <button class="md-button-text" id="batch-delete-btn">
+                    <span class="material-symbols-outlined">delete</span>
+                    <span>删除</span>
+                </button>
+                <button class="md-icon-button" onclick="cancelSelection()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals will be added dynamically -->
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/material-app.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/preview.js"></script>
+    
+    <script>
+        // Initialize Material components
+        document.addEventListener('DOMContentLoaded', () => {
+            initMaterialApp();
+        });
+    </script>
+</body>
+</html>
+

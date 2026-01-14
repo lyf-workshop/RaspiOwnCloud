@@ -1,0 +1,573 @@
+/**
+ * Material Design 3 基础样式系统
+ * 参考 Google Material Design Guidelines
+ * https://m3.material.io/
+ */
+
+/* ==================== 颜色系统 ==================== */
+:root {
+  /* Primary Color - 主色调 (参考 Cloudreve 的蓝紫色) */
+  --md-primary: #6750A4;
+  --md-primary-container: #EADDFF;
+  --md-on-primary: #FFFFFF;
+  --md-on-primary-container: #21005D;
+  
+  /* Secondary Color - 次要色 */
+  --md-secondary: #625B71;
+  --md-secondary-container: #E8DEF8;
+  --md-on-secondary: #FFFFFF;
+  --md-on-secondary-container: #1D192B;
+  
+  /* Tertiary Color - 第三色 */
+  --md-tertiary: #7D5260;
+  --md-tertiary-container: #FFD8E4;
+  --md-on-tertiary: #FFFFFF;
+  --md-on-tertiary-container: #31111D;
+  
+  /* Error Color - 错误色 */
+  --md-error: #B3261E;
+  --md-error-container: #F9DEDC;
+  --md-on-error: #FFFFFF;
+  --md-on-error-container: #410E0B;
+  
+  /* Surface Colors - 表面色 */
+  --md-surface: #FFFBFE;
+  --md-surface-variant: #E7E0EC;
+  --md-on-surface: #1C1B1F;
+  --md-on-surface-variant: #49454F;
+  
+  /* Background - 背景色 */
+  --md-background: #FFFBFE;
+  --md-on-background: #1C1B1F;
+  
+  /* Outline - 轮廓色 */
+  --md-outline: #79747E;
+  --md-outline-variant: #CAC4D0;
+  
+  /* Shadow - 阴影色 */
+  --md-shadow: #000000;
+  --md-scrim: #000000;
+  
+  /* Inverse Colors - 反转色 */
+  --md-inverse-surface: #313033;
+  --md-inverse-on-surface: #F4EFF4;
+  --md-inverse-primary: #D0BCFF;
+}
+
+/* Dark Mode 暗色模式 */
+[data-theme="dark"] {
+  --md-primary: #D0BCFF;
+  --md-primary-container: #4F378B;
+  --md-on-primary: #371E73;
+  --md-on-primary-container: #EADDFF;
+  
+  --md-secondary: #CCC2DC;
+  --md-secondary-container: #4A4458;
+  --md-on-secondary: #332D41;
+  --md-on-secondary-container: #E8DEF8;
+  
+  --md-tertiary: #EFB8C8;
+  --md-tertiary-container: #633B48;
+  --md-on-tertiary: #492532;
+  --md-on-tertiary-container: #FFD8E4;
+  
+  --md-error: #F2B8B5;
+  --md-error-container: #8C1D18;
+  --md-on-error: #601410;
+  --md-on-error-container: #F9DEDC;
+  
+  --md-surface: #1C1B1F;
+  --md-surface-variant: #49454F;
+  --md-on-surface: #E6E1E5;
+  --md-on-surface-variant: #CAC4D0;
+  
+  --md-background: #1C1B1F;
+  --md-on-background: #E6E1E5;
+  
+  --md-outline: #938F99;
+  --md-outline-variant: #49454F;
+  
+  --md-inverse-surface: #E6E1E5;
+  --md-inverse-on-surface: #1C1B1F;
+  --md-inverse-primary: #6750A4;
+}
+
+/* ==================== Elevation (高程阴影) ==================== */
+.md-elevation-0 { box-shadow: none; }
+
+.md-elevation-1 {
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3),
+              0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+.md-elevation-2 {
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3),
+              0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+
+.md-elevation-3 {
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3),
+              0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+}
+
+.md-elevation-4 {
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3),
+              0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+}
+
+.md-elevation-5 {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3),
+              0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* ==================== 形状系统 ==================== */
+.md-shape-none { border-radius: 0; }
+.md-shape-extra-small { border-radius: 4px; }
+.md-shape-small { border-radius: 8px; }
+.md-shape-medium { border-radius: 12px; }
+.md-shape-large { border-radius: 16px; }
+.md-shape-extra-large { border-radius: 28px; }
+.md-shape-full { border-radius: 9999px; }
+
+/* ==================== 排版系统 ==================== */
+.md-display-large {
+  font-size: 57px;
+  line-height: 64px;
+  font-weight: 400;
+  letter-spacing: -0.25px;
+}
+
+.md-display-medium {
+  font-size: 45px;
+  line-height: 52px;
+  font-weight: 400;
+}
+
+.md-display-small {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 400;
+}
+
+.md-headline-large {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 400;
+}
+
+.md-headline-medium {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 400;
+}
+
+.md-headline-small {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+.md-title-large {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 400;
+}
+
+.md-title-medium {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: 0.15px;
+}
+
+.md-title-small {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+
+.md-body-large {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+.md-body-medium {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0.25px;
+}
+
+.md-body-small {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0.4px;
+}
+
+.md-label-large {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+
+.md-label-medium {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.md-label-small {
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== 动画系统 ==================== */
+/* Material Motion - 强调动画 */
+:root {
+  /* Duration */
+  --md-duration-short1: 50ms;
+  --md-duration-short2: 100ms;
+  --md-duration-short3: 150ms;
+  --md-duration-short4: 200ms;
+  --md-duration-medium1: 250ms;
+  --md-duration-medium2: 300ms;
+  --md-duration-medium3: 350ms;
+  --md-duration-medium4: 400ms;
+  --md-duration-long1: 450ms;
+  --md-duration-long2: 500ms;
+  --md-duration-long3: 550ms;
+  --md-duration-long4: 600ms;
+  --md-duration-extra-long1: 700ms;
+  --md-duration-extra-long2: 800ms;
+  --md-duration-extra-long3: 900ms;
+  --md-duration-extra-long4: 1000ms;
+  
+  /* Easing */
+  --md-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --md-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --md-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+  --md-easing-emphasized-accelerate: cubic-bezier(0.3, 0.0, 0.8, 0.15);
+  --md-easing-legacy: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --md-easing-legacy-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --md-easing-legacy-accelerate: cubic-bezier(0.4, 0.0, 1, 1);
+  --md-easing-linear: cubic-bezier(0, 0, 1, 1);
+}
+
+.md-transition {
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+/* ==================== 波纹效果 ==================== */
+.md-ripple {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.md-ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: width var(--md-duration-medium4) var(--md-easing-standard),
+              height var(--md-duration-medium4) var(--md-easing-standard),
+              opacity var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.md-ripple:active::before {
+  width: 300%;
+  height: 300%;
+  opacity: 0.12;
+  transition: 0s;
+}
+
+/* ==================== Material Components ==================== */
+
+/* Card 卡片 */
+.md-card {
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  border-radius: var(--md-shape-medium);
+  overflow: hidden;
+  transition: box-shadow var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.md-card:hover {
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3),
+              0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Filled Card */
+.md-card-filled {
+  background-color: var(--md-surface-variant);
+}
+
+/* Outlined Card */
+.md-card-outlined {
+  background-color: var(--md-surface);
+  border: 1px solid var(--md-outline-variant);
+}
+
+/* Elevated Card */
+.md-card-elevated {
+  background-color: var(--md-surface);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3),
+              0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* FAB (Floating Action Button) */
+.md-fab {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3),
+              0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+  z-index: 1000;
+}
+
+.md-fab:hover {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3),
+              0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+.md-fab:active {
+  transform: scale(0.95);
+}
+
+/* Extended FAB */
+.md-fab-extended {
+  width: auto;
+  padding: 0 24px;
+  gap: 12px;
+}
+
+/* Button 按钮 */
+.md-button {
+  height: 40px;
+  padding: 0 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Filled Button */
+.md-button-filled {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3),
+              0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+.md-button-filled:hover {
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3),
+              0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Outlined Button */
+.md-button-outlined {
+  background-color: transparent;
+  color: var(--md-primary);
+  border: 1px solid var(--md-outline);
+}
+
+.md-button-outlined:hover {
+  background-color: rgba(103, 80, 164, 0.08);
+}
+
+/* Text Button */
+.md-button-text {
+  background-color: transparent;
+  color: var(--md-primary);
+  padding: 0 12px;
+}
+
+.md-button-text:hover {
+  background-color: rgba(103, 80, 164, 0.08);
+}
+
+/* Icon Button */
+.md-icon-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--md-on-surface-variant);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.md-icon-button:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Text Field 文本框 */
+.md-text-field {
+  position: relative;
+  width: 100%;
+}
+
+.md-text-field input {
+  width: 100%;
+  height: 56px;
+  padding: 16px;
+  border: 1px solid var(--md-outline);
+  border-radius: 4px;
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  font-size: 16px;
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.md-text-field input:focus {
+  outline: none;
+  border-color: var(--md-primary);
+  border-width: 2px;
+  padding: 15px; /* 调整以保持相同的视觉大小 */
+}
+
+.md-text-field label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--md-on-surface-variant);
+  font-size: 16px;
+  pointer-events: none;
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+  background-color: var(--md-surface);
+  padding: 0 4px;
+}
+
+.md-text-field input:focus + label,
+.md-text-field input:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 12px;
+  color: var(--md-primary);
+}
+
+/* Chip 标签 */
+.md-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface-variant);
+  font-size: 14px;
+  font-weight: 500;
+  gap: 8px;
+  cursor: pointer;
+  transition: all var(--md-duration-medium2) var(--md-easing-standard);
+}
+
+.md-chip:hover {
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3),
+              0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* Divider 分割线 */
+.md-divider {
+  height: 1px;
+  background-color: var(--md-outline-variant);
+  border: none;
+  margin: 0;
+}
+
+/* Progress Indicators 进度指示器 */
+.md-progress-linear {
+  width: 100%;
+  height: 4px;
+  background-color: var(--md-surface-variant);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.md-progress-linear-bar {
+  height: 100%;
+  background-color: var(--md-primary);
+  transition: width var(--md-duration-medium4) var(--md-easing-standard);
+}
+
+/* Indeterminate progress */
+.md-progress-linear-indeterminate .md-progress-linear-bar {
+  animation: md-progress-indeterminate 2s linear infinite;
+}
+
+@keyframes md-progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ==================== 响应式设计 ==================== */
+@media (max-width: 600px) {
+  .md-fab {
+    bottom: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+  }
+  
+  .md-fab-extended {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+  }
+  
+  .md-fab-extended span {
+    display: none;
+  }
+}
+
+@media (max-width: 840px) {
+  /* 调整排版尺寸 */
+  .md-display-large { font-size: 45px; line-height: 52px; }
+  .md-display-medium { font-size: 36px; line-height: 44px; }
+  .md-display-small { font-size: 32px; line-height: 40px; }
+}
+

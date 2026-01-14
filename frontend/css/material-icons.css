@@ -1,0 +1,130 @@
+/**
+ * Material Icons 图标系统集成
+ * 使用 Material Symbols (Google Fonts)
+ */
+
+/* 引入 Material Symbols Outlined */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+/* Material Icons 基础类 */
+.material-icons,
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+  vertical-align: middle;
+  user-select: none;
+}
+
+/* 图标尺寸变体 */
+.material-icons.md-18,
+.material-symbols-outlined.md-18 { font-size: 18px; }
+
+.material-icons.md-24,
+.material-symbols-outlined.md-24 { font-size: 24px; }
+
+.material-icons.md-36,
+.material-symbols-outlined.md-36 { font-size: 36px; }
+
+.material-icons.md-48,
+.material-symbols-outlined.md-48 { font-size: 48px; }
+
+/* 图标颜色变体 */
+.material-icons.md-dark,
+.material-symbols-outlined.md-dark { color: rgba(0, 0, 0, 0.54); }
+
+.material-icons.md-light,
+.material-symbols-outlined.md-light { color: rgba(255, 255, 255, 1); }
+
+.material-icons.md-inactive,
+.material-symbols-outlined.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* 常用文件类型图标映射 */
+.file-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface-variant);
+}
+
+.file-icon.folder {
+  color: #FFA726;
+}
+
+.file-icon.image {
+  color: #42A5F5;
+}
+
+.file-icon.video {
+  color: #EF5350;
+}
+
+.file-icon.audio {
+  color: #AB47BC;
+}
+
+.file-icon.document {
+  color: #5C6BC0;
+}
+
+.file-icon.pdf {
+  color: #F44336;
+}
+
+.file-icon.archive {
+  color: #FFA726;
+}
+
+.file-icon.code {
+  color: #66BB6A;
+}
+
+/* 图标辅助类 */
+.icon-start {
+  margin-right: 8px;
+}
+
+.icon-end {
+  margin-left: 8px;
+}
+
+.icon-only {
+  margin: 0;
+}
+
+/* 旋转动画（用于加载图标） */
+.icon-spin {
+  animation: icon-spin 1s linear infinite;
+}
+
+@keyframes icon-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 脉冲动画（用于提示图标） */
+.icon-pulse {
+  animation: icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
